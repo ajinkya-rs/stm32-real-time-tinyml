@@ -5,7 +5,8 @@ set(CMAKE_SYSTEM_NAME Generic)
 # Target CPU architecture. The Cortex-M core is specified with compiler flags.
 set(CMAKE_SYSTEM_PROCESSOR arm)
 
-# ARM GCC compiler used to build C source files for the microcontroller.
+# Use the ARM GCC toolchain to compile assembly and C source files.
+set(CMAKE_ASM_COMPILER arm-none-eabi-gcc)
 set(CMAKE_C_COMPILER arm-none-eabi-gcc)
 
 # Use a static library during compiler checks because bare-metal targets
