@@ -20,7 +20,10 @@ A minimal STM32F3 bare-metal project using CMake, Ninja, and the GNU Arm toolcha
 - OpenOCD
 - ST-LINK
 
-## Build with ARM-Toolchain
+## Build 
+
+### with ARM-Toolchain
+
 ```bash
 arm-none-eabi-gcc \
     -mcpu=cortex-m4 \
@@ -29,4 +32,16 @@ arm-none-eabi-gcc \
     -T linker/linker_stm32f303x.ld \
     -o firmware.elf \
     src/main.c
+```
+
+### with CMake
+
+Configure the project:
+```bash
+cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain/arm-none-eabi.cmake
+```
+
+Build the firmware ELF:
+```bash
+cmake --build build
 ```
