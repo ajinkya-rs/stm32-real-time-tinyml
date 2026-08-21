@@ -1,0 +1,5 @@
+# CMAKE generated files and build output
+build*/
+
+# MacOS related files
+.DS_Store

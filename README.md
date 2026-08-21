@@ -1,2 +1,32 @@
-# stm32-real-time-tinyml
-STM32 Real-Time TinyML sensor node build with bare-metal C, Cortex-M4, FreeRTOS, DMA, peripherals, fault handling, and on-device TinyML for deterministic sensor aquisistion and local anomaly/event detection.
+# STM32 ARM Cortex-M Bare-Metal Setup
+
+A minimal STM32F3 bare-metal project using CMake, Ninja, and the GNU Arm toolchain.
+
+## Hardware
+
+- STM32F3 with Cortex-M4 core
+- ST-LINK debug probe over SWD
+- Detected flash size: 256 KB
+- Flash start address: `0x08000000`
+- RAM start address: `0x20000000`
+- RAM size: 48 KB
+
+## Tools
+
+- VS Code
+- CMake
+- Ninja
+- GNU Arm Embedded Toolchain (`arm-none-eabi-gcc`)
+- OpenOCD
+- ST-LINK
+
+## Build with ARM-Toolchain
+```bash
+arm-none-eabi-gcc \
+    -mcpu=cortex-m4 \
+    -mthumb \
+    -nostdlib \
+    -T linker/linker_stm32f303x.ld \
+    -o firmware.elf \
+    src/main.c
+```
