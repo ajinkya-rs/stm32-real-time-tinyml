@@ -3,16 +3,30 @@
  * File:    main.c
  * Brief:   Minimal bare-metal application entry point for STM32F3.
  *
- * This function is called from Reset_Handler after the Cortex-M startup code
- * initializes the processor state.
+ * Called from Reset_Handler after startup initialization:
+ *
+ *   - .data initialization (FLASH → RAM)
+ *
  * =============================================================================
  */
 
+/*
+ * .data test variable.
+ *
+ * Initial value is stored in FLASH.
+ * Startup copies it to RAM before main().
+ * Volatile keeps it available for debugger verification.
+ */
+volatile unsigned int test_data = 0x12345678;
+
+
 int main(void)
 {
-    while (1)
-    {
-        // Application code runs here.
+    /*
+     * Application code runs here after startup is complete.
+     */
+    while (1) {
+
     }
 
     return 0;

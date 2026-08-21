@@ -54,4 +54,35 @@ SECTIONS
         *(.text)
         *(.text*)
     } > FLASH
+
+    /*
+     * Contains initialized writable global/static variables.
+     *
+     * Runtime  : Variable lives in RAM because it must be writable.
+     * Load     : Initial value is stored in Flash so it survives reset.
+     *
+     * Startup copies FLASH (_sidata) → RAM (_sdata to _edata).
+     */
+    .data :
+    {
+        . = ALIGN(4);
+
+        _sdata = .;     /* Start of .data in RAM */
+
+        *(.data)
+        *(.data*)       /* Collect input .data sections */
+
+        . = ALIGN(4);
+
+        _edata = .;     /* End of .data in RAM */
+
+    } > RAM AT > FLASH
+
+    /*
+    * Flash load address of .data initial image.
+    *
+    * _sidata = Start of Initial Data
+    * Used as source address during startup copy.
+    */
+    _sidata = LOADADDR(.data);
 }
