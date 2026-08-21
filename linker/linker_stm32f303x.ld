@@ -85,4 +85,27 @@ SECTIONS
     * Used as source address during startup copy.
     */
     _sidata = LOADADDR(.data);
+
+    /*
+     * .bss: zero-initialized writable variables.
+     *
+     * Runtime location: RAM (No Flash load image required.)
+     *
+     * Startup clears: _sbss → _ebss
+     */
+    .bss (NOLOAD) :
+    {
+        . = ALIGN(4);
+
+        _sbss = .;          /* Start of .bss in RAM */
+
+        *(.bss)
+        *(.bss*)            /* Collect all input .bss sections from object files */
+        *(COMMON)           /* Include uninitialized global variables */
+
+        . = ALIGN(4);
+
+        _ebss = .;          /* End of .bss in RAM */
+
+    } > RAM
 }

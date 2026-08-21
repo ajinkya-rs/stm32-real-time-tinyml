@@ -19,6 +19,14 @@
  */
 volatile unsigned int test_data = 0x12345678;
 
+/*
+ * .bss test variable.
+ *
+ * No initial value, so startup clears it to zero before main().
+ * Volatile keeps it available for debugger verification.
+ */
+volatile unsigned int test_bss;
+
 
 int main(void)
 {

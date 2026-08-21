@@ -82,6 +82,30 @@ copy_data:
 
 data_done:
 
+/*
+ * Clear .bss section.
+ *
+ * .bss contains variables without initial values.
+ * C requires them to start as zero before main().
+ */
+ldr     r0, =_sbss       /* Start of .bss in RAM */
+ldr     r1, =_ebss       /* End of .bss in RAM */
+movs    r2, #0           /* Value used to clear memory */
+
+
+clear_bss:
+    cmp     r0, r1       /* Stop when entire .bss is cleared */
+    bcs     bss_done
+
+    str     r2, [r0]     /* Write zero to RAM */
+
+    add     r0, r0, #4   /* Next RAM address */
+
+    b       clear_bss
+
+
+bss_done:
+
 
 /*
  * C runtime is ready.
