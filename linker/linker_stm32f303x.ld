@@ -56,6 +56,23 @@ SECTIONS
     } > FLASH
 
     /*
+     * .rodata: read-only data.
+     *
+     * Contains constants and string literals.
+     * Stored directly in FLASH because values are not modified at runtime.
+     */
+    .rodata :
+    {
+        . = ALIGN(4);
+
+        *(.rodata)
+        *(.rodata*)          /* Collect read-only data sections */
+
+        . = ALIGN(4);
+
+    } > FLASH
+
+    /*
      * Contains initialized writable global/static variables.
      *
      * Runtime  : Variable lives in RAM because it must be writable.

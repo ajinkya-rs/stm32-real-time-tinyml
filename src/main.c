@@ -27,6 +27,23 @@ volatile unsigned int test_data = 0x12345678;
  */
 volatile unsigned int test_bss;
 
+/*
+ * .rodata test variable.
+ *
+ * Constant data is stored directly in FLASH.
+ * No startup copy to RAM is required.
+ */
+const unsigned int device_id = 1234;
+
+
+/*
+ * .rodata string test.
+ *
+ * String literals are stored in FLASH because
+ * they are not modified at runtime.
+ */
+const char message[] = "Hello STM32";
+
 
 int main(void)
 {
