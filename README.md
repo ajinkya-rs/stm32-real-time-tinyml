@@ -45,3 +45,10 @@ Build the firmware ELF:
 ```bash
 cmake --build build
 ```
+
+## Documentation
+
+Project documentation is organized in the  `docs/` directory.
+
+- [Reset and Startup Sequence of ARM Cortex-M](docs/reset_and_startup_sequence.md)
+- [ELF Inspection, Flashing and Debugging](docs/inspection_and_debugging_tools.md)

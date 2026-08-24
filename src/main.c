@@ -18,6 +18,7 @@
  * Volatile keeps it available for debugger verification.
  */
 volatile unsigned int test_data = 0x12345678;
+volatile static unsigned int test_static_data = 0xA5A5A5A5;
 
 /*
  * .bss test variable.
