@@ -3,10 +3,10 @@ cmake_minimum_required(VERSION 3.20)
 # Define the embedded firmware project and enable C and assembly support.
 project(stm32-real-time-tinyml ASM C)
 
-# Create the STM32 firmware ELF executable from startup and application sources.
+# Create the STM32 firmware ELF executable from startup and application sources
 # The ELF file contains symbol information required for source-level debugging.
 add_executable(firmware.elf
-    startup/startup_stm32f303x.s
+    startup/startup_stm32f303xc.s
     src/main.c
 )
 
@@ -25,6 +25,6 @@ target_compile_options(firmware.elf PRIVATE
 # The linker script defines memory layout and firmware section placement.
 # -nostdlib removes dependency on the default C runtime and standard libraries.
 target_link_options(firmware.elf PRIVATE
-    -T${CMAKE_SOURCE_DIR}/linker/linker_stm32f303x.ld
+    -T${CMAKE_SOURCE_DIR}/linker/linker_stm32f303xc.ld
     -nostdlib
 )
