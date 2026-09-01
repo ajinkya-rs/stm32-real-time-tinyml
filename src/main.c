@@ -1,59 +1,62 @@
-/*
- * =============================================================================
- * File:    main.c
- * Brief:   Minimal bare-metal application entry point for STM32F3.
+/**
+ ******************************************************************************
+ * @file    main.c
+ * @brief   GPIO LED application entry point for the STM32F303xC.
  *
- * Called from Reset_Handler after startup initialization:
+ * @details
+ * This file contains the main application entry point.
  *
- *   - .data initialization (FLASH → RAM)
+ * The application enables the GPIOE peripheral clock, configures the GPIO
+ * pin connected to the user LED as a push-pull output with no internal
+ * pull-up or pull-down, and continuously toggles the LED.
  *
- * =============================================================================
+ * A simple software busy-wait loop is currently used to create a visible
+ * delay between LED state changes. This delay is intended only for the
+ * initial GPIO demonstration and is not a precise time-delay mechanism.
+ *
+ * This software delay should be replaced with a hardware timer or an
+ * RTOS timing mechanism when those components are implemented.
+ *
+ * @author  Ajinkya Shinde
+ * @date    2026-08-31
+ ******************************************************************************
  */
 
-/*
- * .data test variable.
- *
- * Initial value is stored in FLASH.
- * Startup copies it to RAM before main().
- * Volatile keeps it available for debugger verification.
- */
-volatile unsigned int test_data = 0x12345678;
-volatile static unsigned int test_static_data = 0xA5A5A5A5;
-
-/*
- * .bss test variable.
- *
- * No initial value, so startup clears it to zero before main().
- * Volatile keeps it available for debugger verification.
- */
-volatile unsigned int test_bss;
-
-/*
- * .rodata test variable.
- *
- * Constant data is stored directly in FLASH.
- * No startup copy to RAM is required.
- */
-const unsigned int device_id = 1234;
-
-
-/*
- * .rodata string test.
- *
- * String literals are stored in FLASH because
- * they are not modified at runtime.
- */
-const char message[] = "Hello STM32";
-
+#include "stm32f303xc.h"
+#include "rcc.h"
+#include "gpio.h"
 
 int main(void)
 {
-    /*
-     * Application code runs here after startup is complete.
-     */
-    while (1) {
+    /* Enable the clock for GPIOE before accessing its registers. */
+    RCC_GPIO_EnableClock(RCC_AHBENR_GPIOEEN_Msk);
 
+    /* Configure GPIOE pin 8 as a push-pull output with no pull resistor. */
+    GPIO_Init(GPIOE,
+              GPIO_PIN_8,
+              GPIO_MODE_OUTPUT,
+              GPIO_OUTPUT_PUSH_PULL,
+              GPIO_PULL_NONE);
+
+    while (1)
+    {
+        /* Toggle the current output state of the user LED. */
+        GPIO_TogglePin(GPIOE, GPIO_PIN_8);
+
+        /*
+         * Temporary software delay.
+         *
+         * 'volatile' prevents the compiler from optimizing away the loop
+         * because the counter is considered observable.
+         *
+         * '100000U' is an unsigned iteration count. It does not represent
+         * a fixed time such as milliseconds or microseconds.
+         *
+         * The actual delay depends on CPU frequency, compiler, optimization
+         * level, and generated machine instructions.
+         */
+        for (volatile uint32_t i = 0U; i < 100000U; i++)
+        {
+        }
     }
-
-    return 0;
 }

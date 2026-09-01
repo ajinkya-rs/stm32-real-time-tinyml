@@ -79,7 +79,7 @@ void GPIO_Init(GPIO_TypeDef *GPIOx,
      * Clear the existing two-bit field before writing the new configuration.
      */
     GPIOx->PUPDR &= ~(3UL << shift);
-    GPIOx->PUPDR |= ((uint32_t)pull_push << shift);
+    GPIOx->PUPDR |= ((uint32_t)pull << shift);
 }
 
 uint8_t GPIO_ReadPin(GPIO_TypeDef *GPIOx,
