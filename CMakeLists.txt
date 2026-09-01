@@ -7,6 +7,8 @@ project(stm32-real-time-tinyml ASM C)
 # The ELF file contains symbol information required for source-level debugging.
 add_executable(firmware.elf
     startup/startup_stm32f303xc.s
+    driver/src/rcc.c
+    driver/src/gpio.c
     src/main.c
 )
 
@@ -20,6 +22,13 @@ target_compile_options(firmware.elf PRIVATE
     -g
     -O0
 )
+
+# Make the device-specific STM32F303xC header available.
+target_include_directories(firmware.elf PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/device/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/driver/include
+)
+
 
 # Configure the linker for the bare-metal STM32 firmware image.
 # The linker script defines memory layout and firmware section placement.
