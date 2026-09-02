@@ -34,6 +34,7 @@ void GPIO_Init(GPIO_TypeDef *GPIOx,
                GPIO_Pin_t gpio_pin,
                GPIO_Mode_t mode,
                GPIO_OutputType_t output_type,
+               GPIO_Speed_t speed,
                GPIO_Pull_t pull)
 {
     /*
@@ -58,24 +59,22 @@ void GPIO_Init(GPIO_TypeDef *GPIOx,
 
     /* 
      * OTYPER[n] controls the output type of GPIO pin n:
-     *
-     *     0 = Push-pull
-     *     1 = Open-drain
-     *
      * Clear the existing bit first so that the requested value can be
      * correctly written whether it is 0 or 1.
      */
     GPIOx->OTYPER &= ~(1UL << gpio_pin);
     GPIOx->OTYPER |= ((uint32_t)output_type << gpio_pin);
 
+    /*
+     * OSPEEDR[2n+1:2n] configures the output speed
+     * Clear the exisiting two-bit field before writing the new configuration
+    */
+    GPIOx->OSPEEDR &= ~(3UL << shift);
+    GPIOx->OSPEEDR |= ((uint32_t)speed << shift);
+
 
     /* 
      * PUPDR[2n+1:2n] controls the internal pull configuration:
-     *
-     *     00 = No pull-up / pull-down
-     *     01 = Pull-up
-     *     10 = Pull-down
-     *
      * Clear the existing two-bit field before writing the new configuration.
      */
     GPIOx->PUPDR &= ~(3UL << shift);

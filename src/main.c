@@ -39,6 +39,7 @@ int main(void)
               GPIO_PIN_8,
               GPIO_MODE_OUTPUT,
               GPIO_OUTPUT_PUSH_PULL,
+              GPIO_SPEED_LOW,
               GPIO_PULL_NONE);
     
     /* Configure GPIOE pin 9 as a push-pull output with no pull resistor. */
@@ -46,6 +47,7 @@ int main(void)
               GPIO_PIN_9,
               GPIO_MODE_OUTPUT,
               GPIO_OUTPUT_PUSH_PULL,
+              GPIO_SPEED_LOW,
               GPIO_PULL_NONE);
 
     /* Configure GPIOA pin 0 as a push-pull input with no pull resistor. */
@@ -53,6 +55,7 @@ int main(void)
               GPIO_PIN_0,
               GPIO_MODE_INPUT,
               GPIO_OUTPUT_PUSH_PULL,
+              GPIO_SPEED_LOW,
               GPIO_PULL_NONE);
 
     while (1)

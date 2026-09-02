@@ -116,6 +116,28 @@ typedef enum
 
 } GPIO_OutputType_t;
 
+/**
+ * @brief GPIO output-speed configuration.
+ *
+ * @details
+ * Selects the output speed for a GPIO output or alternate-function output.
+ * 
+ * - GPIO_SPEED_LOW             - Low speed
+ * - GPIO_SPEED_MEDIUM          - Medium speed
+ * - GPIO_SPEED_HIGH            - High speed
+ *
+ * @note
+ * This setting is relevant when the pin is used as an output or
+ * alternate-function output.
+ */
+typedef enum
+{
+    GPIO_SPEED_LOW              = 0U,
+    GPIO_SPEED_MEDIUM           = 1U,
+    GPIO_SPEED_HIGH             = 2U
+
+} GPIO_Speed_t;
+
 
 /**
  * @brief GPIO internal pull-up/pull-down configuration.
@@ -148,12 +170,14 @@ typedef enum
  * @param  gpio_pin    GPIO pin to configure.
  * @param  mode        GPIO operating mode.
  * @param  output_type GPIO output driver type.
+ * @param  speed       GPIO output speed configuartion.
  * @param  pull        GPIO internal pull-up/pull-down configuration.
  *
  * @details
  * Configures the selected GPIO pin's:
  * - Operating mode through MODER.
  * - Output driver type through OTYPER.
+ * - Output speed through OSPEEDR
  * - Internal pull-up/pull-down configuration through PUPDR.
  *
  * The existing register configuration for the selected pin is cleared
@@ -166,6 +190,7 @@ void GPIO_Init(GPIO_TypeDef *GPIOx,
                GPIO_Pin_t gpio_pin,
                GPIO_Mode_t mode,
                GPIO_OutputType_t output_type,
+               GPIO_Speed_t speed,
                GPIO_Pull_t pull);
 
 
