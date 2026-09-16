@@ -9,6 +9,7 @@ add_executable(firmware.elf
     startup/startup_stm32f303xc.s
     driver/src/rcc.c
     driver/src/gpio.c
+    driver/src/syscfg.c
     src/main.c
 )
 

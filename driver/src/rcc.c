@@ -7,8 +7,8 @@
  * This file implements the RCC driver APIs used to control peripheral
  * clock enable functions.
  *
- * The current implementation provides GPIO AHB clock control through
- * the RCC AHBENR register.
+ * The current implementation provides AHB and APB2 clock control through
+ * the RCC registers
  *
  * @author  Ajinkya Shinde
  * @date    2026-08-31
@@ -19,11 +19,12 @@
 #include "stm32f303xc.h"
 
 
-/* ***************************************************************************
- *                           GPIO CLOCK CONTROL
- * ************************************************************************* */
-
-void RCC_GPIO_EnableClock(uint32_t gpio_ahbenr_mask)
+void RCC_AHB_EnableClock(uint32_t ahbenr_mask)
 {
-    RCC->AHBENR |= gpio_ahbenr_mask;
+    RCC->AHBENR |= ahbenr_mask;
+}
+
+void RCC_APB2_EnableClock(uint32_t apb2enr_mask)
+{
+    RCC->APB2ENR |= apb2enr_mask;
 }

@@ -27,12 +27,16 @@
 #include "stm32f303xc.h"
 #include "rcc.h"
 #include "gpio.h"
+#include "syscfg.h"
 
 int main(void)
 {
     /* Enable the clock for GPIOx port before accessing its registers. */
-    RCC_GPIO_EnableClock(RCC_AHBENR_GPIOAEN_Msk |
+    RCC_AHB_EnableClock (RCC_AHBENR_GPIOAEN_Msk |
                          RCC_AHBENR_GPIOEEN_Msk);
+
+    /* Enable the clock for SYSCFG before accessing its registers. */
+    RCC_APB2_EnableClock (RCC_APB2ENR_SYSCFGEN_Msk);
 
     /* Configure GPIOE pin 8 as a push-pull output with no pull resistor. */
     GPIO_Init(GPIOE,
@@ -57,6 +61,10 @@ int main(void)
               GPIO_OUTPUT_PUSH_PULL,
               GPIO_SPEED_LOW,
               GPIO_PULL_NONE);
+
+    /* Configure SYSCFG to connect GPIOA pin 0 to EXTI line 0. */
+    SYSCFG_EXTI_SetPort(0U, EXTI_PORT_A);
+    
 
     while (1)
     {

@@ -21,18 +21,28 @@
 #include <stdint.h>
 
 /* ***************************************************************************
- *                           GPIO CLOCK CONTROL
+ *                           FUNCTION DECLARATIONS
  * ************************************************************************* */
 
 /**
- * @brief Enable the AHB clock for one or more GPIO peripherals.
+ * @brief Enable one or more AHB peripheral clocks.
  *
- * @param  gpio_ahbenr_mask   GPIO AHB clock-enable bit mask defined by the device header.
+ * @param ahbenr_mask AHB clock-enable bit mask.
  *
  * @note
- * The supplied mask is ORed into the RCC AHBENR register.
+ * The supplied mask is ORed into RCC AHBENR.
  */
-void RCC_GPIO_EnableClock(uint32_t gpio_ahbenr_mask);
+void RCC_AHB_EnableClock(uint32_t ahbenr_mask);
+
+/**
+ * @brief Enable one or more APB2 peripheral clocks.
+ *
+ * @param apb2enr_mask APB2 clock-enable bit mask.
+ *
+ * @note
+ * The supplied mask is ORed into RCC APB2ENR.
+ */
+void RCC_APB2_EnableClock(uint32_t apb2enr_mask);
 
 
 #endif /* RCC_H_ */
