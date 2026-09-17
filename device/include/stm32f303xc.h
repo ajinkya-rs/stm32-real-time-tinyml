@@ -53,6 +53,26 @@ typedef struct
 
 }SYSCFG_TypeDef;
 
+/**
+ * @brief EXTI peripheral regisrer map
+ */
+typedef struct
+{
+    volatile uint32_t IMR1;         /**< 0x00:  EXTI interuupt mask register 1 */
+    volatile uint32_t EMR1;         /**< 0x04:  EXTI even mask register 1 */
+    volatile uint32_t RTSR1;        /**< 0x08:  EXTI rising trigger selection register 1 */
+    volatile uint32_t FTSR1;        /**< 0x0C:  EXTI falling trigger selection register 1 */
+    volatile uint32_t SWIER1;       /**< 0x10:  EXTI software interrupt event register 1 */
+    volatile uint32_t PR1;          /**< 0x14:  EXTI pending register 1 */
+    volatile uint32_t IMR2;         /**< 0x18:  EXTI interrupt mask register 2 */
+    volatile uint32_t EMR2;         /**< 0x1C:  EXTI event mask register 2 */
+    volatile uint32_t RTSR2;        /**< 0x08:  EXTI rising trigger selection register 2 */
+    volatile uint32_t FTSR2;        /**< 0x0C:  EXTI falling trigger selection register 2 */
+    volatile uint32_t SWIER2;       /**< 0x10:  EXTI software interrupt event register 2 */
+    volatile uint32_t PR2;          /**< 0x14:  EXTI pending register 2 */
+
+}EXTI_TypeDef;
+
 
 /**
  * @brief RCC peripheral register map.
@@ -125,6 +145,7 @@ typedef struct
 
 /* APB2 peripherals */
 #define SYSCFG_BASE             (APB2PERIPH_BASE + 0x00000000UL)
+#define EXTI_BASE               (APB2PERIPH_BASE + 0x00000400UL)
 
 
 /* AHB1 peripherals */
@@ -150,6 +171,7 @@ typedef struct
  *                          PERIPHERAL INSTANCES
  * ------------------------------------------------------------------------- */
 #define SYSCFG                  ((SYSCFG_TypeDef *)SYSCFG_BASE)
+#define EXTI                    ((EXTI_TypeDef *) EXTI_BASE)
 
 #define RCC                     ((RCC_TypeDef *)RCC_BASE)
 

@@ -10,6 +10,7 @@ add_executable(firmware.elf
     driver/src/rcc.c
     driver/src/gpio.c
     driver/src/syscfg.c
+    driver/src/exti.c
     src/main.c
 )
 

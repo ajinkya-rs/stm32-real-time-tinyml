@@ -28,6 +28,7 @@
 #include "rcc.h"
 #include "gpio.h"
 #include "syscfg.h"
+#include "exti.h"
 
 int main(void)
 {
@@ -64,8 +65,13 @@ int main(void)
 
     /* Configure SYSCFG to connect GPIOA pin 0 to EXTI line 0. */
     SYSCFG_EXTI_SetPort(0U, EXTI_PORT_A);
-    
 
+    /* Configure a rising-edge trigger for EXTI line 0. */
+    EXTI_SelectTrigger(0U, EXTI_TRIGGER_RISING);
+
+    /* Enable the external interrupt for EXTI line 0. */
+    EXTI_EnableInterrupt(0U);
+    
     while (1)
     {
         if (GPIO_ReadPin(GPIOA, GPIO_PIN_0) != 0U) {
