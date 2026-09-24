@@ -11,6 +11,7 @@ add_executable(firmware.elf
     driver/src/gpio.c
     driver/src/syscfg.c
     driver/src/exti.c
+    driver/src/nvic.c
     src/main.c
 )
 
@@ -27,6 +28,7 @@ target_compile_options(firmware.elf PRIVATE
 
 # Make the device-specific STM32F303xC header available.
 target_include_directories(firmware.elf PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/core
     ${CMAKE_CURRENT_SOURCE_DIR}/device/include
     ${CMAKE_CURRENT_SOURCE_DIR}/driver/include
 )

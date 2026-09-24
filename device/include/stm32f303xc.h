@@ -114,6 +114,21 @@ typedef struct
 
 } GPIO_TypeDef;
 
+/**
+ * @brief EXTI IRQ number 
+ */
+typedef enum
+{
+    EXTI0       = 6U,               /*!< EXTI line 0 interrupt */
+    EXTI1       = 7U,               /*!< EXTI line 1 interrupt */
+    EXTI2_TS    = 8U,               /*!< EXTI line 2 and touch sensing interrupt */
+    EXTI3       = 9U,               /*!< EXTI line 3 interrupt */
+    EXTI4       = 10U,              /*!< EXTI line 4 interrupt */
+    EXTI9_5     = 23U,              /*!< EXTI line [9:5] interrupt */
+    EXTI15_10   = 40U               /*!< EXTI line [15:10] interrupt */
+
+} IRQn_Type;
+
 /** @} */
 
 /* ***************************************************************************
