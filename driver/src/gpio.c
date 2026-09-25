@@ -28,8 +28,6 @@
 #include "gpio.h"
 #include "stm32f303xc.h"
 
-
-
 void GPIO_Init(GPIO_TypeDef *GPIOx,
                GPIO_Pin_t gpio_pin,
                GPIO_Mode_t mode,
@@ -67,8 +65,8 @@ void GPIO_Init(GPIO_TypeDef *GPIOx,
 
     /*
      * OSPEEDR[2n+1:2n] configures the output speed
-     * Clear the exisiting two-bit field before writing the new configuration
-    */
+     * Clear the existing two-bit field before writing the new configuration
+     */
     GPIOx->OSPEEDR &= ~(3UL << shift);
     GPIOx->OSPEEDR |= ((uint32_t)speed << shift);
 

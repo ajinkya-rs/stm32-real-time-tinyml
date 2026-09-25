@@ -8,7 +8,7 @@
  *   1. Initial Main Stack Pointer (MSP)
  *   2. Reset_Handler address
  *   3. Cortex-M system exception vectors
- *.  4. STM32F303xC external interrupt vectors
+ *   4. STM32F303xC external interrupt vectors
  *
  * After reset, the Cortex-M processor loads the initial Main Stack Pointer (MSP)
  * and the reset vector from the vector table. 

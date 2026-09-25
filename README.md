@@ -9,7 +9,7 @@ A minimal STM32F3 bare-metal project using CMake, Ninja, and the GNU Arm toolcha
 - Detected flash size: 256 KB
 - Flash start address: `0x08000000`
 - RAM start address: `0x20000000`
-- RAM size: 48 KB
+- RAM size: 40 KB
 
 ## Tools
 
@@ -20,7 +20,7 @@ A minimal STM32F3 bare-metal project using CMake, Ninja, and the GNU Arm toolcha
 - OpenOCD
 - ST-LINK
 
-## Build 
+## Build
 
 ### with ARM-Toolchain
 
@@ -29,7 +29,7 @@ arm-none-eabi-gcc \
     -mcpu=cortex-m4 \
     -mthumb \
     -nostdlib \
-    -T linker/linker_stm32f303x.ld \
+    -T linker/linker_stm32f303xc.ld \
     -o firmware.elf \
     src/main.c
 ```

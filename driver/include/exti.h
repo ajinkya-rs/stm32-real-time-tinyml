@@ -15,7 +15,7 @@
 #ifndef EXTI_H_
 #define EXTI_H_
 
-#include<stdint.h>
+#include <stdint.h>
 
 /* ***************************************************************************
  *                        ENUMS, TYPEDEFS and DEFINES
@@ -43,7 +43,7 @@ typedef enum
  * @param[in] exti_line
  * EXTI line number (0 to 15).
  */
-void EXTI_EnableInterrupt (uint8_t exti_line);
+void EXTI_EnableInterrupt(uint8_t exti_line);
 
 /**
  * @brief Configure the trigger condition for an EXTI line.
@@ -52,15 +52,15 @@ void EXTI_EnableInterrupt (uint8_t exti_line);
  * EXTI line number (0 to 15).
  * 
  * @param[in] trigger
- * Trigger condition for the EXTI line
+ * Trigger condition for the EXTI line.
  */
-void EXTI_SelectTrigger (uint8_t exti_line, EXTI_Trigger_t trigger);
+void EXTI_SelectTrigger(uint8_t exti_line, EXTI_Trigger_t trigger);
 
 /**
  * @brief Handle EXTI line 0 interrupt.
  *
  * Clears the EXTI0 pending flag and handles the interrupt event.
  */
-void EXTI0_IRQHandler (void);
+void EXTI0_IRQHandler(void);
 
 #endif /* EXTI_H_ */

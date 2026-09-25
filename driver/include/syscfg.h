@@ -12,8 +12,8 @@
  */
 
 
-#ifndef SYSCFG_H
-#define SYSCFG_H
+#ifndef SYSCFG_H_
+#define SYSCFG_H_
 
 #include <stdint.h>
 
@@ -60,10 +60,10 @@ typedef enum
  * The EXTI line number corresponds to the GPIO pin number.
  *
  * Example:
- *     SYSCFG_EXTI_SetPort(0U, SYSCFG_EXTI_PORT_A);
+ *     SYSCFG_EXTI_SetPort(0U, EXTI_PORT_A);
  *
  * selects PA0 as the source for EXTI0.
  */
 void SYSCFG_EXTI_SetPort(uint8_t exti_line, SYSCFG_EXTI_Port_t port);
 
-#endif /* SYSCFG_H */
+#endif /* SYSCFG_H_ */

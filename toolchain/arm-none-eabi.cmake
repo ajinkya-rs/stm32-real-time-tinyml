@@ -1,4 +1,4 @@
-# Toolchain file for cross-compiling firmware for ARM microcontrollers.
+# Toolchain file for bare-metal ARM Cortex-M firmware.
 # CMake uses these settings before project() to select the target compiler.
 set(CMAKE_SYSTEM_NAME Generic)
 

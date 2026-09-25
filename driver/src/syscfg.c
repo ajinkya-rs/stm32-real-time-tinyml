@@ -34,11 +34,11 @@ void SYSCFG_EXTI_SetPort(uint8_t exti_line, SYSCFG_EXTI_Port_t port)
     /* Calculate the starting bit position of the EXTI configuration field. */
     uint8_t bit_position = (exti_line % EXTI_LINES_PER_REGISTER) * EXTI_CONFIGURATION_BITS;
 
-    /* Get the address of the required EXTICR register. */
+    /* Select the EXTICR register containing the selected EXTI line. */
     volatile uint32_t *exticr = &SYSCFG->EXTICR1 + exticr_index;
 
-     /* Clear the existing 4-bit EXTI configuration field. */
+    /* Clear the existing 4-bit EXTI configuration field. */
     *exticr &= ~(0x0FU << bit_position);
-     /* Write the selected GPIO port into the EXTI configuration field. */
+    /* Write the selected GPIO port into the EXTI configuration field. */
     *exticr |= ((uint32_t)port << bit_position);
 }

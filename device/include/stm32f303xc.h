@@ -51,25 +51,25 @@ typedef struct
     volatile uint32_t EXTICR4;      /*!< 0x14:  SYSCFG external interrupt configuration register 4 */
     volatile uint32_t CFGR2;        /*!< 0x18:  SYSCFG configuration register 2 */
 
-}SYSCFG_TypeDef;
+} SYSCFG_TypeDef;
 
 /**
  * @brief EXTI peripheral register map.
  */
 typedef struct
 {
-    volatile uint32_t IMR1;         /**< 0x00: EXTI interrupt mask register 1 */
-    volatile uint32_t EMR1;         /**< 0x04: EXTI event mask register 1 */
-    volatile uint32_t RTSR1;        /**< 0x08: EXTI rising trigger selection register 1 */
-    volatile uint32_t FTSR1;        /**< 0x0C: EXTI falling trigger selection register 1 */
-    volatile uint32_t SWIER1;       /**< 0x10: EXTI software interrupt event register 1 */
-    volatile uint32_t PR1;          /**< 0x14: EXTI pending register 1 (W1C) */
-    volatile uint32_t IMR2;         /**< 0x18: EXTI interrupt mask register 2 */
-    volatile uint32_t EMR2;         /**< 0x1C: EXTI event mask register 2 */
-    volatile uint32_t RTSR2;        /**< 0x20: EXTI rising trigger selection register 2 */
-    volatile uint32_t FTSR2;        /**< 0x24: EXTI falling trigger selection register 2 */
-    volatile uint32_t SWIER2;       /**< 0x28: EXTI software interrupt event register 2 */
-    volatile uint32_t PR2;          /**< 0x2C: EXTI pending register 2 (W1C) */
+    volatile uint32_t IMR1;         /*!< 0x00: EXTI interrupt mask register 1 */
+    volatile uint32_t EMR1;         /*!< 0x04: EXTI event mask register 1 */
+    volatile uint32_t RTSR1;        /*!< 0x08: EXTI rising trigger selection register 1 */
+    volatile uint32_t FTSR1;        /*!< 0x0C: EXTI falling trigger selection register 1 */
+    volatile uint32_t SWIER1;       /*!< 0x10: EXTI software interrupt event register 1 */
+    volatile uint32_t PR1;          /*!< 0x14: EXTI pending register 1 (W1C) */
+    volatile uint32_t IMR2;         /*!< 0x18: EXTI interrupt mask register 2 */
+    volatile uint32_t EMR2;         /*!< 0x1C: EXTI event mask register 2 */
+    volatile uint32_t RTSR2;        /*!< 0x20: EXTI rising trigger selection register 2 */
+    volatile uint32_t FTSR2;        /*!< 0x24: EXTI falling trigger selection register 2 */
+    volatile uint32_t SWIER2;       /*!< 0x28: EXTI software interrupt event register 2 */
+    volatile uint32_t PR2;          /*!< 0x2C: EXTI pending register 2 (W1C) */
 
 } EXTI_TypeDef;
 
@@ -79,19 +79,19 @@ typedef struct
  */
 typedef struct
 {
-    volatile uint32_t CR;           /*!< 0x00: RCC clock control register. */
-    volatile uint32_t CFGR;         /*!< 0x04: RCC clock configuration register. */
-    volatile uint32_t CIR;          /*!< 0x08: RCC clock interrupt register. */
-    volatile uint32_t APB2RSTR;     /*!< 0x0C: RCC APB2 peripheral reset register. */
-    volatile uint32_t APB1RSTR;     /*!< 0x10: RCC APB1 peripheral reset register. */
-    volatile uint32_t AHBENR;       /*!< 0x14: RCC AHB peripheral clock enable register. */
-    volatile uint32_t APB2ENR;      /*!< 0x18: RCC APB2 peripheral clock enable register. */
-    volatile uint32_t APB1ENR;      /*!< 0x1C: RCC APB1 peripheral clock enable register. */
-    volatile uint32_t BDCR;         /*!< 0x20: RCC backup domain control register. */
-    volatile uint32_t CSR;          /*!< 0x24: RCC clock control and status register. */
-    volatile uint32_t AHBRSTR;      /*!< 0x28: RCC AHB peripheral reset register. */
-    volatile uint32_t CFGR2;        /*!< 0x2C: RCC clock configuration register 2. */
-    volatile uint32_t CFGR3;        /*!< 0x30: RCC clock configuration register 3. */
+    volatile uint32_t CR;           /*!< 0x00: RCC clock control register */
+    volatile uint32_t CFGR;         /*!< 0x04: RCC clock configuration register */
+    volatile uint32_t CIR;          /*!< 0x08: RCC clock interrupt register */
+    volatile uint32_t APB2RSTR;     /*!< 0x0C: RCC APB2 peripheral reset register */
+    volatile uint32_t APB1RSTR;     /*!< 0x10: RCC APB1 peripheral reset register */
+    volatile uint32_t AHBENR;       /*!< 0x14: RCC AHB peripheral clock enable register */
+    volatile uint32_t APB2ENR;      /*!< 0x18: RCC APB2 peripheral clock enable register */
+    volatile uint32_t APB1ENR;      /*!< 0x1C: RCC APB1 peripheral clock enable register */
+    volatile uint32_t BDCR;         /*!< 0x20: RCC backup domain control register */
+    volatile uint32_t CSR;          /*!< 0x24: RCC clock control and status register */
+    volatile uint32_t AHBRSTR;      /*!< 0x28: RCC AHB peripheral reset register */
+    volatile uint32_t CFGR2;        /*!< 0x2C: RCC clock configuration register 2 */
+    volatile uint32_t CFGR3;        /*!< 0x30: RCC clock configuration register 3 */
 
 } RCC_TypeDef;
 
@@ -101,16 +101,16 @@ typedef struct
  */
 typedef struct
 {
-    volatile uint32_t MODER;        /*!< 0x00: GPIO port mode register. */
-    volatile uint32_t OTYPER;       /*!< 0x04: GPIO port output type register. */
-    volatile uint32_t OSPEEDR;      /*!< 0x08: GPIO port output speed register. */
-    volatile uint32_t PUPDR;        /*!< 0x0C: GPIO port pull-up/pull-down register. */
-    volatile uint32_t IDR;          /*!< 0x10: GPIO port input data register. */
-    volatile uint32_t ODR;          /*!< 0x14: GPIO port output data register. */
-    volatile uint32_t BSRR;         /*!< 0x18: GPIO port bit set/reset register. */
-    volatile uint32_t LCKR;         /*!< 0x1C: GPIO port configuration lock register. */
-    volatile uint32_t AFR[2];       /*!< 0x20-0x24: GPIO alternate function registers. */
-    volatile uint32_t BRR;          /*!< 0x28: GPIO port bit reset register. */
+    volatile uint32_t MODER;        /*!< 0x00: GPIO port mode register */
+    volatile uint32_t OTYPER;       /*!< 0x04: GPIO port output type register */
+    volatile uint32_t OSPEEDR;      /*!< 0x08: GPIO port output speed register */
+    volatile uint32_t PUPDR;        /*!< 0x0C: GPIO port pull-up/pull-down register */
+    volatile uint32_t IDR;          /*!< 0x10: GPIO port input data register */
+    volatile uint32_t ODR;          /*!< 0x14: GPIO port output data register */
+    volatile uint32_t BSRR;         /*!< 0x18: GPIO port bit set/reset register */
+    volatile uint32_t LCKR;         /*!< 0x1C: GPIO port configuration lock register */
+    volatile uint32_t AFR[2];       /*!< 0x20-0x24: GPIO alternate function registers */
+    volatile uint32_t BRR;          /*!< 0x28: GPIO port bit reset register */
 
 } GPIO_TypeDef;
 
@@ -188,7 +188,7 @@ typedef enum
  *                          PERIPHERAL INSTANCES
  * ------------------------------------------------------------------------- */
 #define SYSCFG                  ((SYSCFG_TypeDef *)SYSCFG_BASE)
-#define EXTI                    ((EXTI_TypeDef *) EXTI_BASE)
+#define EXTI                    ((EXTI_TypeDef *)EXTI_BASE)
 
 #define RCC                     ((RCC_TypeDef *)RCC_BASE)
 

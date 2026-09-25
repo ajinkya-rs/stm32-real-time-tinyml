@@ -1,7 +1,7 @@
 /*
  * =============================================================================
- * File:    linker.ld
- * Brief:   Memory layout for a minimal bare-metal STM32F3 firmware.
+ * File:    linker_stm32f303xc.ld
+ * Brief:   Memory layout for the STM32F303xC bare-metal firmware.
  *
  * Places the vector table and program instructions in internal flash.
  * Defines the initial stack-pointer value at the top of internal RAM.

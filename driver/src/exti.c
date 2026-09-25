@@ -17,7 +17,7 @@
 #include "gpio.h"
 #include "stm32f303xc.h"
 
-void EXTI_EnableInterrupt (uint8_t exti_line)
+void EXTI_EnableInterrupt(uint8_t exti_line)
 {
     /* Validate the EXTI line number. */
     if (exti_line >= TOTAL_EXTI_LINES)
@@ -31,7 +31,7 @@ void EXTI_EnableInterrupt (uint8_t exti_line)
 
 void EXTI_SelectTrigger(uint8_t exti_line, EXTI_Trigger_t trigger)
 {
-    /* Check that the external interrupt line is within the valid range 0-15. */
+    /* Validate the EXTI line number. */
     if (exti_line >= TOTAL_EXTI_LINES)
     {
         return;

@@ -166,18 +166,18 @@ typedef enum
 /**
  * @brief  Initialize a GPIO pin.
  *
- * @param  GPIOx       GPIO peripheral instance.
- * @param  gpio_pin    GPIO pin to configure.
- * @param  mode        GPIO operating mode.
- * @param  output_type GPIO output driver type.
- * @param  speed       GPIO output speed configuartion.
- * @param  pull        GPIO internal pull-up/pull-down configuration.
+ * @param[in] GPIOx       GPIO peripheral instance.
+ * @param[in] gpio_pin    GPIO pin to configure.
+ * @param[in] mode        GPIO operating mode.
+ * @param[in] output_type GPIO output driver type.
+ * @param[in] speed       GPIO output speed configuration.
+ * @param[in] pull        GPIO internal pull-up/pull-down configuration.
  *
  * @details
  * Configures the selected GPIO pin's:
  * - Operating mode through MODER.
  * - Output driver type through OTYPER.
- * - Output speed through OSPEEDR
+ * - Output speed through OSPEEDR.
  * - Internal pull-up/pull-down configuration through PUPDR.
  *
  * The existing register configuration for the selected pin is cleared
@@ -197,8 +197,8 @@ void GPIO_Init(GPIO_TypeDef *GPIOx,
 /**
  * @brief  Read the current logic level of a GPIO pin.
  *
- * @param  GPIOx      GPIO peripheral instance.
- * @param  gpio_pin   GPIO pin to read.
+ * @param[in] GPIOx      GPIO peripheral instance.
+ * @param[in] gpio_pin   GPIO pin to read.
  *
  * @return GPIO pin logic level.
  *         0U = LOW.
@@ -218,9 +218,9 @@ uint8_t GPIO_ReadPin(GPIO_TypeDef *GPIOx,
 /**
  * @brief  Write a logic level to a GPIO output pin.
  *
- * @param  GPIOx      GPIO peripheral instance.
- * @param  gpio_pin   GPIO pin to write.
- * @param  value      Output value.
+ * @param[in] GPIOx      GPIO peripheral instance.
+ * @param[in] gpio_pin   GPIO pin to write.
+ * @param[in] value      Output value.
  *                    0U = LOW.
  *                    Non-zero = HIGH.
  *
@@ -244,8 +244,8 @@ void GPIO_WritePin(GPIO_TypeDef *GPIOx,
 /**
  * @brief  Toggle the current output state of a GPIO pin.
  *
- * @param  GPIOx      GPIO peripheral instance.
- * @param  gpio_pin   GPIO pin to toggle.
+ * @param[in] GPIOx GPIO peripheral instance.
+ * @param[in] gpio_pin GPIO pin to toggle.
  *
  * @details
  * Reads the current output data state from ODR and then uses BSRR

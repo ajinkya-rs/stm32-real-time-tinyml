@@ -44,7 +44,7 @@ int main(void)
               GPIO_SPEED_LOW,
               GPIO_PULL_NONE);
 
-    /* Configure GPIOA pin 0 as the USER button input. */
+    /* Configure PA0 as the USER button input. */
     GPIO_Init(GPIOA,
               GPIO_PIN_0,
               GPIO_MODE_INPUT,

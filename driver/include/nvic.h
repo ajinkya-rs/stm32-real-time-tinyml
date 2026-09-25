@@ -4,7 +4,8 @@
  * @brief   NVIC driver interface.
  *
  * @details
- * Provides configuration to enable and set priority of the NVIC 
+ * Provides APIs to enable external interrupts and configure 
+ * their interrupt priorities in the NVIC.
  *
  * @author  Ajinkya Shinde
  * @date    2026-09-18
@@ -25,7 +26,7 @@
  * Enables the specified external interrupt by setting its corresponding
  * interrupt enable bit in the NVIC Interrupt Set-Enable Register (ISER).
  *
- * @param irq_number External interrupt number.
+ * @param[in] irq_number External interrupt number.
  */
 void NVIC_EnableIRQ(IRQn_Type irq_number);
 
@@ -42,8 +43,11 @@ void NVIC_EnableIRQ(IRQn_Type irq_number);
  * Priority level 0 has the highest priority, while priority level 15
  * has the lowest priority.
  *
- * @param irq_number  IRQ number to configure.
- * @param priority    Interrupt priority level (0 to 15).
+ * @param[in] irq_number
+ * IRQ number to configure.
+ * 
+ * @param[in] priority
+ * Interrupt priority level (0 to 15).
  */
 void NVIC_SetPriority(IRQn_Type irq_number, uint8_t priority);
 

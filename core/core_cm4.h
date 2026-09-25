@@ -70,7 +70,7 @@ typedef struct
  *                        CORE PERIPHERAL MEMORY MAP
  * ------------------------------------------------------------------------- */
 
-#define NVIC_BASE                   0xE000E100UL            /* Base address of the NVIC peripheral. */
+#define NVIC_BASE   0xE000E100UL  /* NVIC base address. */
 
 /** @} */
 
@@ -82,7 +82,7 @@ typedef struct
  *                       CORE PERIPHERAL INSTANCES
  * ------------------------------------------------------------------------- */
 
-#define NVIC                        ((NVIC_TypeDef *)NVIC_BASE)
+#define NVIC    ((NVIC_TypeDef *)NVIC_BASE)
 
 /** @} */
 

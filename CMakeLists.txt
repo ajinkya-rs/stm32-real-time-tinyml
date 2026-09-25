@@ -15,7 +15,7 @@ add_executable(firmware.elf
     src/main.c
 )
 
-# Configure compiler options for the STM32F3 Cortex-M4 processor.
+# Configure compiler options for the STM32F303xC Cortex-M4 target.
 # Thumb mode enables the compact instruction set used by Cortex-M devices.
 # -g generates debug information for debugging with a debugger.
 # -O0 disables compiler optimization to keep code behavior easy to trace.
