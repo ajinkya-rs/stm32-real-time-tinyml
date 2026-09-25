@@ -1,27 +1,23 @@
 /**
- ******************************************************************************
+ * ****************************************************************************
  * @file    main.c
- *
- * @brief   GPIO LED application entry point for the STM32F303xC.
+ * @brief   GPIO and external interrupt demonstration for the STM32F303xC.
  *
  * @details
- * This file contains the main application entry point.
+ * Configures GPIOA pin 0 as the external interrupt source and GPIOE pin 9
+ * as the user LED output. GPIOA pin 0 is connected to EXTI line 0 through
+ * SYSCFG and configured to generate an interrupt on a rising edge.
  *
- * The application enables the GPIOA and GPIOE peripheral clocks and
- * configures the GPIO pins connected to the user LEDs PE8 and PE9 and
- * the USER button on PA0. User LED PE8 toggles continuously, while
- * user LED PE9 toggles only when the USER button is pressed.
+ * The EXTI0 interrupt is enabled through the NVIC. When the USER button
+ * generates the configured edge, EXTI0_IRQHandler() handles the interrupt
+ * and toggles the user LED on PE9.
  *
- * A simple software busy-wait loop is currently used to create a visible
- * delay between LED state changes. This delay is intended only for the
- * initial GPIO demonstration and is not a precise time-delay mechanism.
- *
- * This software delay should be replaced with a hardware timer or an
- * RTOS timing mechanism when those components are implemented.
+ * The main loop does not poll the USER button. The LED is controlled by
+ * the EXTI interrupt handler.
  *
  * @author  Ajinkya Shinde
- * @date    2026-08-31
- ******************************************************************************
+ * @date    2026-09-25
+ * ****************************************************************************
  */
 
 #include "stm32f303xc.h"
@@ -29,25 +25,18 @@
 #include "gpio.h"
 #include "syscfg.h"
 #include "exti.h"
+#include "nvic.h"
 
 int main(void)
 {
-    /* Enable the clock for GPIOx port before accessing its registers. */
-    RCC_AHB_EnableClock (RCC_AHBENR_GPIOAEN_Msk |
-                         RCC_AHBENR_GPIOEEN_Msk);
+    /* Enable the GPIOA and GPIOE peripheral clocks. */
+    RCC_AHB_EnableClock(RCC_AHBENR_GPIOAEN_Msk |
+                        RCC_AHBENR_GPIOEEN_Msk);
 
-    /* Enable the clock for SYSCFG before accessing its registers. */
-    RCC_APB2_EnableClock (RCC_APB2ENR_SYSCFGEN_Msk);
+    /* Enable the SYSCFG peripheral clock. */
+    RCC_APB2_EnableClock(RCC_APB2ENR_SYSCFGEN_Msk);
 
-    /* Configure GPIOE pin 8 as a push-pull output with no pull resistor. */
-    GPIO_Init(GPIOE,
-              GPIO_PIN_8,
-              GPIO_MODE_OUTPUT,
-              GPIO_OUTPUT_PUSH_PULL,
-              GPIO_SPEED_LOW,
-              GPIO_PULL_NONE);
-    
-    /* Configure GPIOE pin 9 as a push-pull output with no pull resistor. */
+    /* Configure GPIOE pin 9 as a push-pull output for the user LED. */
     GPIO_Init(GPIOE,
               GPIO_PIN_9,
               GPIO_MODE_OUTPUT,
@@ -55,7 +44,7 @@ int main(void)
               GPIO_SPEED_LOW,
               GPIO_PULL_NONE);
 
-    /* Configure GPIOA pin 0 as a push-pull input with no pull resistor. */
+    /* Configure GPIOA pin 0 as the USER button input. */
     GPIO_Init(GPIOA,
               GPIO_PIN_0,
               GPIO_MODE_INPUT,
@@ -63,39 +52,24 @@ int main(void)
               GPIO_SPEED_LOW,
               GPIO_PULL_NONE);
 
-    /* Configure SYSCFG to connect GPIOA pin 0 to EXTI line 0. */
+    /* Connect GPIOA pin 0 to EXTI line 0 through SYSCFG. */
     SYSCFG_EXTI_SetPort(0U, EXTI_PORT_A);
 
-    /* Configure a rising-edge trigger for EXTI line 0. */
+    /* Configure EXTI line 0 to trigger on a rising edge. */
     EXTI_SelectTrigger(0U, EXTI_TRIGGER_RISING);
 
-    /* Enable the external interrupt for EXTI line 0. */
+    /* Unmask EXTI line 0 so it can generate an interrupt. */
     EXTI_EnableInterrupt(0U);
-    
+
+    /* Configure and enable the EXTI0 interrupt in the NVIC. */
+    NVIC_SetPriority(EXTI0_IRQn, 0U);
+    NVIC_EnableIRQ(EXTI0_IRQn);
+
+    /*
+     * The USER button is handled by EXTI0_IRQHandler().
+     * No polling is required in the main loop.
+     */
     while (1)
     {
-        if (GPIO_ReadPin(GPIOA, GPIO_PIN_0) != 0U) {
-            /* If button is pressed, then toogle the user LED PE9. */
-            GPIO_TogglePin(GPIOE, GPIO_PIN_9);
-        }
-
-        /* Toggle the current output state of the user LED PE8. */
-        GPIO_TogglePin(GPIOE, GPIO_PIN_8);
-        
-        /*
-         * Temporary software delay.
-         *
-         * 'volatile' prevents the compiler from optimizing away the loop
-         * because the counter is considered observable.
-         *
-         * '100000U' is an unsigned iteration count. It does not represent
-         * a fixed time such as milliseconds or microseconds.
-         *
-         * The actual delay depends on CPU frequency, compiler, optimization
-         * level, and generated machine instructions.
-         */
-        for (volatile uint32_t i = 0U; i < 100000U; i++)
-        {
-        }
     }
 }

@@ -54,24 +54,24 @@ typedef struct
 }SYSCFG_TypeDef;
 
 /**
- * @brief EXTI peripheral regisrer map
+ * @brief EXTI peripheral register map.
  */
 typedef struct
 {
-    volatile uint32_t IMR1;         /**< 0x00:  EXTI interuupt mask register 1 */
-    volatile uint32_t EMR1;         /**< 0x04:  EXTI even mask register 1 */
-    volatile uint32_t RTSR1;        /**< 0x08:  EXTI rising trigger selection register 1 */
-    volatile uint32_t FTSR1;        /**< 0x0C:  EXTI falling trigger selection register 1 */
-    volatile uint32_t SWIER1;       /**< 0x10:  EXTI software interrupt event register 1 */
-    volatile uint32_t PR1;          /**< 0x14:  EXTI pending register 1 */
-    volatile uint32_t IMR2;         /**< 0x18:  EXTI interrupt mask register 2 */
-    volatile uint32_t EMR2;         /**< 0x1C:  EXTI event mask register 2 */
-    volatile uint32_t RTSR2;        /**< 0x08:  EXTI rising trigger selection register 2 */
-    volatile uint32_t FTSR2;        /**< 0x0C:  EXTI falling trigger selection register 2 */
-    volatile uint32_t SWIER2;       /**< 0x10:  EXTI software interrupt event register 2 */
-    volatile uint32_t PR2;          /**< 0x14:  EXTI pending register 2 */
+    volatile uint32_t IMR1;         /**< 0x00: EXTI interrupt mask register 1 */
+    volatile uint32_t EMR1;         /**< 0x04: EXTI event mask register 1 */
+    volatile uint32_t RTSR1;        /**< 0x08: EXTI rising trigger selection register 1 */
+    volatile uint32_t FTSR1;        /**< 0x0C: EXTI falling trigger selection register 1 */
+    volatile uint32_t SWIER1;       /**< 0x10: EXTI software interrupt event register 1 */
+    volatile uint32_t PR1;          /**< 0x14: EXTI pending register 1 (W1C) */
+    volatile uint32_t IMR2;         /**< 0x18: EXTI interrupt mask register 2 */
+    volatile uint32_t EMR2;         /**< 0x1C: EXTI event mask register 2 */
+    volatile uint32_t RTSR2;        /**< 0x20: EXTI rising trigger selection register 2 */
+    volatile uint32_t FTSR2;        /**< 0x24: EXTI falling trigger selection register 2 */
+    volatile uint32_t SWIER2;       /**< 0x28: EXTI software interrupt event register 2 */
+    volatile uint32_t PR2;          /**< 0x2C: EXTI pending register 2 (W1C) */
 
-}EXTI_TypeDef;
+} EXTI_TypeDef;
 
 
 /**
@@ -115,18 +115,20 @@ typedef struct
 } GPIO_TypeDef;
 
 /**
- * @brief EXTI IRQ number 
+ * @brief STM32F303 external interrupt numbers.
+ *
+ * Values correspond to the interrupt positions listed in RM0316 Table 82
+ * and are used as IRQ numbers when accessing the NVIC.
  */
 typedef enum
 {
-    EXTI0       = 6U,               /*!< EXTI line 0 interrupt */
-    EXTI1       = 7U,               /*!< EXTI line 1 interrupt */
-    EXTI2_TS    = 8U,               /*!< EXTI line 2 and touch sensing interrupt */
-    EXTI3       = 9U,               /*!< EXTI line 3 interrupt */
-    EXTI4       = 10U,              /*!< EXTI line 4 interrupt */
-    EXTI9_5     = 23U,              /*!< EXTI line [9:5] interrupt */
-    EXTI15_10   = 40U               /*!< EXTI line [15:10] interrupt */
-
+    EXTI0_IRQn       = 6U,          /*!< EXTI line 0 interrupt */
+    EXTI1_IRQn       = 7U,          /*!< EXTI line 1 interrupt */
+    EXTI2_TS_IRQn    = 8U,          /*!< EXTI line 2 and touch sensing interrupt */
+    EXTI3_IRQn       = 9U,          /*!< EXTI line 3 interrupt */
+    EXTI4_IRQn       = 10U,         /*!< EXTI line 4 interrupt */
+    EXTI9_5_IRQn     = 23U,         /*!< EXTI lines [9:5] interrupt */
+    EXTI15_10_IRQn   = 40U          /*!< EXTI lines [15:10] interrupt */
 } IRQn_Type;
 
 /** @} */

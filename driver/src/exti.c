@@ -4,26 +4,28 @@
  * @brief   EXTI driver implementation for the STM32F303xC.
  *
  * @details
- * Implements external interrupt line configuration and trigger selection
+ * Implements EXTI line interrupt configuration, trigger selection, and
+ * interrupt handling.
  *
  * @author  Ajinkya Shinde
- * @date    2026-09-17
+ * @date    2026-09-25
  * ****************************************************************************
  */
 
 #include "exti.h"
 #include "syscfg.h"
+#include "gpio.h"
 #include "stm32f303xc.h"
 
 void EXTI_EnableInterrupt (uint8_t exti_line)
 {
-    /* Check that the external interrupt line is within the valid range 0-15. */
-    if(exti_line > 15U) 
+    /* Validate the EXTI line number. */
+    if (exti_line >= TOTAL_EXTI_LINES)
     {
         return;
     }
 
-    /* Enable external interrupt for EXTI line by setting the corresponding bit in the IMR */
+    /* Unmask interrupt generation for the selected EXTI line. */
     EXTI->IMR1 |= (1UL << exti_line);
 }
 
@@ -60,5 +62,17 @@ void EXTI_SelectTrigger(uint8_t exti_line, EXTI_Trigger_t trigger)
 
         default:
             return;
+    }
+}
+
+void EXTI0_IRQHandler(void)
+{
+    if (EXTI->PR1 & (1UL << 0))
+    {
+        /* Clear the EXTI0 pending flag (W1C: write 1 to clear). */
+        EXTI->PR1 = (1UL << 0);
+
+        /* Toggle the user LED in response to the EXTI0 event. */
+        GPIO_TogglePin(GPIOE, GPIO_PIN_9);
     }
 }

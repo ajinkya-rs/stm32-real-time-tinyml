@@ -38,7 +38,7 @@ typedef enum
  * ************************************************************************* */
 
 /**
- * @brief Enable interrupt generation for the an EXTI line
+ * @brief Enable interrupt generation for an EXTI line.
  * 
  * @param[in] exti_line
  * EXTI line number (0 to 15).
@@ -46,7 +46,7 @@ typedef enum
 void EXTI_EnableInterrupt (uint8_t exti_line);
 
 /**
- * @brief Configure the trigger condition for an EXTI line
+ * @brief Configure the trigger condition for an EXTI line.
  * 
  * @param[in] exti_line
  * EXTI line number (0 to 15).
@@ -55,5 +55,12 @@ void EXTI_EnableInterrupt (uint8_t exti_line);
  * Trigger condition for the EXTI line
  */
 void EXTI_SelectTrigger (uint8_t exti_line, EXTI_Trigger_t trigger);
+
+/**
+ * @brief Handle EXTI line 0 interrupt.
+ *
+ * Clears the EXTI0 pending flag and handles the interrupt event.
+ */
+void EXTI0_IRQHandler (void);
 
 #endif /* EXTI_H_ */
