@@ -115,6 +115,25 @@ typedef struct
 } GPIO_TypeDef;
 
 /**
+ * @brief USART register map
+ */
+typedef struct
+{
+    volatile uint32_t USART_CR1;    /*!< 0x00: USART control register 1 */
+    volatile uint32_t USART_CR2;    /*!< 0x04: USART control register 2 */
+    volatile uint32_t USART_CR3;    /*!< 0x08: USART control register 3 */
+    volatile uint32_t USART_BRR;    /*!< 0x0C: USART baud rate register */
+    volatile uint32_t USART_GTPR;   /*!< 0x10: USART guard time and prescaler register */
+    volatile uint32_t USART_RTOR;   /*!< 0x14: USART receiver timout register */
+    volatile uint32_t USART_RQR;    /*!< 0x18: USART request register */
+    volatile uint32_t USART_ISR;    /*!< 0x1C: USART interrupt status register */
+    volatile uint32_t USART_ICR;    /*!< 0x20: USART interrupt flag clear register */
+    volatile uint32_t USART_RDR;    /*!< 0x24: USART receive data register */
+    volatile uint32_t USART_TDR;    /*!< 0x28: USART transmitt data register */
+
+} USART_TypeDef;
+
+/**
  * @brief STM32F303 external interrupt numbers.
  *
  * Values correspond to the interrupt positions listed in RM0316 Table 82
@@ -163,15 +182,14 @@ typedef enum
 /* APB2 peripherals */
 #define SYSCFG_BASE             (APB2PERIPH_BASE + 0x00000000UL)
 #define EXTI_BASE               (APB2PERIPH_BASE + 0x00000400UL)
+#define USART1_BASE             (APB2PERIPH_BASE + 0x00013800UL)
 
 
 /* AHB1 peripherals */
-
 #define RCC_BASE                (AHB1PERIPH_BASE + 0x00001000UL)
 
 
 /* AHB2 peripherals */
-
 #define GPIOA_BASE              (AHB2PERIPH_BASE + 0x00000000UL)
 #define GPIOB_BASE              (AHB2PERIPH_BASE + 0x00000400UL)
 #define GPIOC_BASE              (AHB2PERIPH_BASE + 0x00000800UL)
@@ -199,6 +217,8 @@ typedef enum
 #define GPIOE                   ((GPIO_TypeDef *)GPIOE_BASE)
 #define GPIOF                   ((GPIO_TypeDef *)GPIOF_BASE)
 
+#define USART1                  ((USART_TypeDef *) USART1_BASE)
+
 /** @} */
 
 
@@ -214,10 +234,15 @@ typedef enum
  *                         RESET AND CLOCK CONTROL (RCC)
  * ......................................................................... */
 
-/* .................................................................. AHBENR */
+/* .................................................................. APB2ENR */
 
 #define RCC_APB2ENR_SYSCFGEN_Pos            (0U)
 #define RCC_APB2ENR_SYSCFGEN_Msk            (1UL << RCC_APB2ENR_SYSCFGEN_Pos)
+
+#define RCC_APB2ENR_USART1EN_Pos            (14U)
+#define RCC_APB2ENR_USART1EN_Msk            (1UL << RCC_APB2ENR_USART1EN_Pos)
+
+/* .................................................................. AHBENR */
 
 #define RCC_AHBENR_GPIOAEN_Pos              (17U)
 #define RCC_AHBENR_GPIOAEN_Msk              (1UL << RCC_AHBENR_GPIOAEN_Pos)
