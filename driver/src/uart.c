@@ -62,3 +62,13 @@ void USART1_Init (GPIO_TypeDef *tx_port,
     USART1->USART_CR1 |= USART_CR1_TE_Msk;
     USART1->USART_CR1 |= USART_CR1_UE_Msk;
 }
+
+void USART1_SendByte (uint8_t data) 
+{
+    while ((USART1->USART_ISR & USART_ISR_TXE_Msk) == 0U)
+    {
+        /* Wait until the transmit data register can accept a byte. */
+    }
+
+    USART1->USART_TDR = data;
+}

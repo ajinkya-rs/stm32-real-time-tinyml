@@ -288,6 +288,11 @@ typedef enum
 #define USART_CR2_STOP_Pos                  (12U)
 #define USART_CR2_STOP_Msk                  (3UL << USART_CR2_STOP_Pos)
 
+/* .................................................................... ISR */
+
+#define USART_ISR_TXE_Pos                   (7U)
+#define USART_ISR_TXE_Msk                   (1UL << USART_ISR_TXE_Pos)
+
 /** @} */
 
 
