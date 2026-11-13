@@ -26,15 +26,21 @@
 #include "syscfg.h"
 #include "exti.h"
 #include "nvic.h"
+#include "uart.h"
+
+#define USART1_INPUT_CLOCK_HZ           8000000UL  /* PCLK2 with the current clock setup */
+#define USART1_BAUD_RATE                115200UL   /* Must match PuTTY's baud rate */
 
 int main(void)
 {
-    /* Enable the GPIOA and GPIOE peripheral clocks. */
+    /* Enable the GPIOA, GPIOE and GPIOC peripheral clocks. */
     RCC_AHB_EnableClock(RCC_AHBENR_GPIOAEN_Msk |
-                        RCC_AHBENR_GPIOEEN_Msk);
+                        RCC_AHBENR_GPIOEEN_Msk |
+                        RCC_AHBENR_GPIOCEN_Msk);
 
-    /* Enable the SYSCFG peripheral clock. */
-    RCC_APB2_EnableClock(RCC_APB2ENR_SYSCFGEN_Msk);
+    /* Enable the SYSCFG peripheral clock and USART1 peripheral clock */
+    RCC_APB2_EnableClock(RCC_APB2ENR_SYSCFGEN_Msk |
+                         RCC_APB2ENR_USART1EN_Msk);
 
     /* Configure GPIOE pin 9 as a push-pull output for the user LED. */
     GPIO_Init(GPIOE,
@@ -64,6 +70,8 @@ int main(void)
     /* Configure and enable the EXTI0 interrupt in the NVIC. */
     NVIC_SetPriority(EXTI0_IRQn, 0U);
     NVIC_EnableIRQ(EXTI0_IRQn);
+
+    USART1_Init(GPIOC, GPIO_PIN_4, GPIO_AF_7, USART1_INPUT_CLOCK_HZ, USART1_BAUD_RATE);
 
     /*
      * The USER button is handled by EXTI0_IRQHandler().

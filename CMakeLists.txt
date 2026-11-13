@@ -12,6 +12,7 @@ add_executable(firmware.elf
     driver/src/syscfg.c
     driver/src/exti.c
     driver/src/nvic.c
+    driver/src/uart.c
     src/main.c
 )
 

@@ -158,6 +158,36 @@ typedef enum
 
 } GPIO_Pull_t;
 
+/**
+ * @brief GPIO alternate-function selector.
+ *
+ * @details
+ * Selects one of the alternate-function inputs for a GPIO pin.
+ * The peripheral signal assigned to each selector depends on the
+ * microcontroller and pin; 
+ * consult the device datasheet, section 4 alternate function for port X table.
+ */
+typedef enum
+{
+    GPIO_AF_0  = 0U,
+    GPIO_AF_1  = 1U,
+    GPIO_AF_2  = 2U,
+    GPIO_AF_3  = 3U,
+    GPIO_AF_4  = 4U,
+    GPIO_AF_5  = 5U,
+    GPIO_AF_6  = 6U,
+    GPIO_AF_7  = 7U,
+    GPIO_AF_8  = 8U,
+    GPIO_AF_9  = 9U,
+    GPIO_AF_10 = 10U,
+    GPIO_AF_11 = 11U,
+    GPIO_AF_12 = 12U,
+    GPIO_AF_13 = 13U,
+    GPIO_AF_14 = 14U,
+    GPIO_AF_15 = 15U
+} GPIO_AlternateFunction_t;
+
+
 
 /* ***************************************************************************
  *                              GPIO API
@@ -184,7 +214,7 @@ typedef enum
  * before the new configuration is written.
  *
  * @note
- * The GPIO peripheral clock must be enabled before calling this function.
+ * The GPIO peripheral clock (RCC) must be enabled before calling this function.
  */
 void GPIO_Init(GPIO_TypeDef *GPIOx,
                GPIO_Pin_t gpio_pin,
@@ -192,6 +222,24 @@ void GPIO_Init(GPIO_TypeDef *GPIOx,
                GPIO_OutputType_t output_type,
                GPIO_Speed_t speed,
                GPIO_Pull_t pull);
+
+/**
+ * @brief Select the alternate function for a GPIO pin.
+ *
+ * @param[in] GPIOx              GPIO port containing the pin.
+ * @param[in] gpio_pin           GPIO pin to configure.
+ * @param[in] alternate_function GPIO alternate-function number, from 0 to 15.
+ *
+ * @details
+ * Writes the selected pin's four-bit field in AFR[0] or AFR[1].
+ * Call this before GPIO_Init() sets the pin to GPIO_MODE_AF.
+ *
+ * @note
+ * The GPIO port clock (RCC) must be enabled before calling this function.
+ */
+void GPIO_SetAlternateFunction(GPIO_TypeDef *GPIOx,
+                               GPIO_Pin_t gpio_pin,
+                               GPIO_AlternateFunction_t alternate_function);
 
 
 /**

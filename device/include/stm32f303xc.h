@@ -182,7 +182,7 @@ typedef enum
 /* APB2 peripherals */
 #define SYSCFG_BASE             (APB2PERIPH_BASE + 0x00000000UL)
 #define EXTI_BASE               (APB2PERIPH_BASE + 0x00000400UL)
-#define USART1_BASE             (APB2PERIPH_BASE + 0x00013800UL)
+#define USART1_BASE             (APB2PERIPH_BASE + 0x00003800UL)
 
 
 /* AHB1 peripherals */
@@ -261,6 +261,32 @@ typedef enum
 
 #define RCC_AHBENR_GPIOFEN_Pos              (22U)
 #define RCC_AHBENR_GPIOFEN_Msk              (1UL << RCC_AHBENR_GPIOFEN_Pos)
+
+/* ...........................................................................
+ *                         USART
+ * ......................................................................... */
+
+/* .................................................................... CR1 */
+
+#define USART_CR1_UE_Pos                    (0U)
+#define USART_CR1_UE_Msk                    (1UL << USART_CR1_UE_Pos)
+
+#define USART_CR1_TE_Pos                    (3U)
+#define USART_CR1_TE_Msk                    (1UL << USART_CR1_TE_Pos)
+
+#define USART_CR1_M0_Pos                    (12U)
+#define USART_CR1_M0_Msk                    (1UL << USART_CR1_M0_Pos)
+
+#define USART_CR1_M1_Pos                    (28U)
+#define USART_CR1_M1_Msk                    (1UL << USART_CR1_M1_Pos)
+
+#define USART_CR1_PCE_Pos                   (10U)
+#define USART_CR1_PCE_Msk                   (1UL << USART_CR1_PCE_Pos)
+
+/* .................................................................... CR2 */
+
+#define USART_CR2_STOP_Pos                  (12U)
+#define USART_CR2_STOP_Msk                  (3UL << USART_CR2_STOP_Pos)
 
 /** @} */
 

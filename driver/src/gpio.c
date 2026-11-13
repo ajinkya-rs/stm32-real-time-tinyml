@@ -79,6 +79,29 @@ void GPIO_Init(GPIO_TypeDef *GPIOx,
     GPIOx->PUPDR |= ((uint32_t)pull << shift);
 }
 
+void GPIO_SetAlternateFunction(GPIO_TypeDef *GPIOx,
+                               GPIO_Pin_t gpio_pin,
+                               GPIO_AlternateFunction_t alternate_function)
+{
+    uint32_t pin = (uint32_t)gpio_pin;
+    uint32_t index;
+    uint32_t bit_position;
+    uint32_t field_mask;
+
+    if ((pin > 15U) || (alternate_function > 15U))
+    {
+        return;
+    }
+
+    index = pin / 8U;
+    bit_position = (pin % 8U) * 4U;
+    field_mask = 0xFUL << bit_position;
+
+    GPIOx->AFR[index] &= ~field_mask;
+    GPIOx->AFR[index] |=
+        ((uint32_t)alternate_function << bit_position);
+}
+
 uint8_t GPIO_ReadPin(GPIO_TypeDef *GPIOx,
                      GPIO_Pin_t gpio_pin)
 {
