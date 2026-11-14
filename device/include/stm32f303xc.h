@@ -147,6 +147,7 @@ typedef enum
     EXTI3_IRQn       = 9U,          /*!< EXTI line 3 interrupt */
     EXTI4_IRQn       = 10U,         /*!< EXTI line 4 interrupt */
     EXTI9_5_IRQn     = 23U,         /*!< EXTI lines [9:5] interrupt */
+    USART1_IRQn      = 37U,         /*!< USART1 interrupt */
     EXTI15_10_IRQn   = 40U          /*!< EXTI lines [15:10] interrupt */
 } IRQn_Type;
 

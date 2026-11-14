@@ -95,7 +95,7 @@
 .word   Default_Handler             /* Position 34 - Reserved */
 .word   Default_Handler             /* Position 35 - SPI1 */
 .word   Default_Handler             /* Position 36 - Reserved */
-.word   Default_Handler             /* Position 37 - USART1 */
+.word   USART1_IRQHandler           /* Position 37 - USART1 */
 .word   Default_Handler             /* Position 38 - USART2 */
 .word   Default_Handler             /* Position 39 - USART3 */
 .word   EXTI15_10_IRQHandler        /* Position 40 - EXTI15_10 */
@@ -275,3 +275,7 @@ Default_Handler:
 
 .weak   EXTI15_10_IRQHandler
 .set    EXTI15_10_IRQHandler, Default_Handler
+
+/* Weak USART handler symbols */
+.weak   USART1_IRQHandler
+.set    USART1_IRQHandler, Default_Handler
