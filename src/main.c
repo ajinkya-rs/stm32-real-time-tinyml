@@ -71,17 +71,24 @@ int main(void)
     NVIC_SetPriority(EXTI0_IRQn, 0U);
     NVIC_EnableIRQ(EXTI0_IRQn);
 
-    /* Initialize USART1 TX on PC4 */
-    USART1_Init(GPIOC, GPIO_PIN_4, GPIO_AF_7, USART1_INPUT_CLOCK_HZ, USART1_BAUD_RATE);
+    /* Initialize USART1 TX on PC4 and USART1 RX on PC5 */
+    USART1_Init(GPIOC, GPIO_PIN_4, GPIO_AF_7,
+                GPIOC,GPIO_PIN_5, GPIO_AF_7,
+                USART1_INPUT_CLOCK_HZ, 
+                USART1_BAUD_RATE);
 
-    /* Send test string using polling */
-    USART1_SendString("USART1 polling.\r\n");
+    USART1_SendString("USART1 RX test ready\r\n");
 
-    /*
-     * The USER button is handled by EXTI0_IRQHandler().
-     * No polling is required in the main loop.
-     */
+    /* Echo Test : receive each byte and send it back to PuTTY. */
     while (1)
     {
+        /*
+        * PuTTY test settings:
+        * - Local echo Force off: only the character echoed by the STM32 appears.
+        * - Local echo Force on: PuTTY shows the typed character and the STM32's echo.
+        * Keep Local line editing Force off so each key is sent immediately.
+        */
+        uint8_t received_byte = USART1_ReceiveByte();
+        USART1_SendByte(received_byte);
     }
 }

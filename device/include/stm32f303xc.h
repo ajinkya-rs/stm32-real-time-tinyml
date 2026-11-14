@@ -271,6 +271,9 @@ typedef enum
 #define USART_CR1_UE_Pos                    (0U)
 #define USART_CR1_UE_Msk                    (1UL << USART_CR1_UE_Pos)
 
+#define USART_CR1_RE_Pos                    (2U)
+#define USART_CR1_RE_Msk                    (1UL << USART_CR1_RE_Pos)
+
 #define USART_CR1_TE_Pos                    (3U)
 #define USART_CR1_TE_Msk                    (1UL << USART_CR1_TE_Pos)
 
@@ -289,6 +292,9 @@ typedef enum
 #define USART_CR2_STOP_Msk                  (3UL << USART_CR2_STOP_Pos)
 
 /* .................................................................... ISR */
+
+#define USART_ISR_RXNE_Pos                  (5U)
+#define USART_ISR_RXNE_Msk                  (1UL << USART_ISR_RXNE_Pos)
 
 #define USART_ISR_TXE_Pos                   (7U)
 #define USART_ISR_TXE_Msk                   (1UL << USART_ISR_TXE_Pos)
