@@ -234,10 +234,10 @@ bl      main
 b       .
 
 /*
- * Default handler.
- * 
- * Interrupts without a dedicated handler use this function.
- * The handler loops indefinitely until reset.
+ * Default handler for unimplemented interrupts.
+ *
+ * A vector that resolves to Default_Handler stops here. This makes an
+ * unexpected or unimplemented interrupt visible during debugging.
  */
 .type   Default_Handler, %function
 .global Default_Handler
@@ -246,14 +246,15 @@ Default_Handler:
     b       .
 
 /*
- * Weak EXTI handler symbols.
+ * Weak interrupt-handler aliases.
  *
- * The vector table references these symbols before the actual EXTI
- * interrupt handlers are implemented.
+ * These aliases provide a fallback for vector-table handler names that
+ * do not have a strong implementation in the linked firmware. A matching
+ * strong C function overrides its weak alias.
  *
- * The weak aliases allow the default handler to be used until the 
- * dedicated handlers are provided by the EXTI interrupt-handler
- * implementation.
+ * For example, EXTI0_IRQHandler is implemented in exti.c, and
+ * USART1_IRQHandler is implemented in uart.c. Other listed EXTI handlers
+ * currently fall back to Default_Handler unless implemented elsewhere.
  */
 .weak   EXTI0_IRQHandler
 .set    EXTI0_IRQHandler, Default_Handler
@@ -276,6 +277,5 @@ Default_Handler:
 .weak   EXTI15_10_IRQHandler
 .set    EXTI15_10_IRQHandler, Default_Handler
 
-/* Weak USART handler symbols */
 .weak   USART1_IRQHandler
 .set    USART1_IRQHandler, Default_Handler

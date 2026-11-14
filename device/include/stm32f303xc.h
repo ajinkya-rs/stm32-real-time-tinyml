@@ -278,6 +278,9 @@ typedef enum
 #define USART_CR1_TE_Pos                    (3U)
 #define USART_CR1_TE_Msk                    (1UL << USART_CR1_TE_Pos)
 
+#define USART_CR1_RXNEIE_Pos                (5U)
+#define USART_CR1_RXNEIE_Msk                (1UL << USART_CR1_RXNEIE_Pos)
+
 #define USART_CR1_M0_Pos                    (12U)
 #define USART_CR1_M0_Msk                    (1UL << USART_CR1_M0_Pos)
 

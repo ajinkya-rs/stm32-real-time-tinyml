@@ -1,22 +1,16 @@
 /**
  * ****************************************************************************
  * @file    main.c
- * @brief   GPIO and external interrupt demonstration for the STM32F303xC.
+ * @brief EXTI button/LED and USART1 serial demonstration.
  *
  * @details
- * Configures GPIOA pin 0 as the external interrupt source and GPIOE pin 9
- * as the user LED output. GPIOA pin 0 is connected to EXTI line 0 through
- * SYSCFG and configured to generate an interrupt on a rising edge.
- *
- * The EXTI0 interrupt is enabled through the NVIC. When the USER button
- * generates the configured edge, EXTI0_IRQHandler() handles the interrupt
- * and toggles the user LED on PE9.
- *
- * The main loop does not poll the USER button. The LED is controlled by
- * the EXTI interrupt handler.
+ * Configures PA0 to trigger EXTI0 and toggle the LED on PE9.
+ * Configures USART1 on PC4/PC5 for polling-based transmission and
+ * RXNE-interrupt reception. The main loop consumes received bytes from
+ * a one-byte mailbox and echoes them using polling transmission.
  *
  * @author  Ajinkya Shinde
- * @date    2026-09-25
+ * @date    2026-11-14
  * ****************************************************************************
  */
 
@@ -77,18 +71,20 @@ int main(void)
                 USART1_INPUT_CLOCK_HZ, 
                 USART1_BAUD_RATE);
 
-    USART1_SendString("USART1 RX test ready\r\n");
+    /* Configure and enable the USART1 interrupt in the NVIC. */
+    NVIC_SetPriority(USART1_IRQn, 0U);
+    NVIC_EnableIRQ(USART1_IRQn);
 
-    /* Echo Test : receive each byte and send it back to PuTTY. */
+    USART1_SendString("USART1 RX interrupt ready\r\n");
+
+    /* RX-interrupt, polling-TX echo test. */
     while (1)
     {
-        /*
-        * PuTTY test settings:
-        * - Local echo Force off: only the character echoed by the STM32 appears.
-        * - Local echo Force on: PuTTY shows the typed character and the STM32's echo.
-        * Keep Local line editing Force off so each key is sent immediately.
-        */
-        uint8_t received_byte = USART1_ReceiveByte();
-        USART1_SendByte(received_byte);
+        if(received_byte_ready)
+        {
+            uint8_t byte_to_echo = received_byte;
+            received_byte_ready = 0U;
+            USART1_SendByte(byte_to_echo);
+        }
     }
 }

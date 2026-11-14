@@ -17,6 +17,9 @@
 #include "gpio.h"
 #include "stm32f303xc.h"
 
+volatile uint8_t received_byte = 0U;
+volatile uint8_t received_byte_ready = 0U;
+
 void USART1_Init(GPIO_TypeDef *tx_port, GPIO_Pin_t tx_pin, GPIO_AlternateFunction_t tx_af,
                 GPIO_TypeDef *rx_port, GPIO_Pin_t rx_pin, GPIO_AlternateFunction_t rx_af,
                 uint32_t usart_clock_hz,
@@ -50,10 +53,11 @@ void USART1_Init(GPIO_TypeDef *tx_port, GPIO_Pin_t tx_pin, GPIO_AlternateFunctio
               GPIO_PULL_NONE);
 
     /*
-     * Establish a simple asynchronous, 8-N-1, polling-TX configuration:
-     * CR1 = 0: 8 data bits, no parity, OVER8 = 0; UE, TE and RE off.
-     * CR2 = 0: asynchronous mode, one stop bit.
-     * CR3 = 0: no flow control, DMA, or USART interrupt sources enabled.
+     * Set asynchronous 8-N-1 framing:
+     * CR1 baseline: 8 data bits, no parity, oversampling by 16.
+     * CR2 = 0: asynchronous mode and one stop bit.
+     * CR3 = 0: no hardware flow control or DMA.
+     * RXNEIE is enabled separately for interrupt-driven reception.
      */
     USART1->USART_CR1 = 0U;
     USART1->USART_CR2 = 0U;
@@ -67,7 +71,7 @@ void USART1_Init(GPIO_TypeDef *tx_port, GPIO_Pin_t tx_pin, GPIO_AlternateFunctio
     USART1->USART_BRR = brr_value;
 
     /* Enable the transmitter and receiver while UE is still clear, then enable USART1. */
-    USART1->USART_CR1 |= (USART_CR1_RE_Msk | USART_CR1_TE_Msk);
+    USART1->USART_CR1 |= (USART_CR1_RE_Msk | USART_CR1_TE_Msk | USART_CR1_RXNEIE_Msk);
     USART1->USART_CR1 |= USART_CR1_UE_Msk;
 }
 
@@ -92,10 +96,21 @@ void USART1_SendString(const char *tx_text)
 
 uint8_t USART1_ReceiveByte(void)
 {
-    while ((USART1->USART_ISR & USART_ISR_RXNE_Msk) == 0U)
-    {
-        /* Wait until the received data is ready to be read */
-    }
+    /* DISABLED as using interrupt based RX */
 
-    return (uint8_t)USART1->USART_RDR;
+    // while ((USART1->USART_ISR & USART_ISR_RXNE_Msk) == 0U)
+    // {
+    //     /* Wait until the received data is ready to be read */
+    // }
+
+    // return (uint8_t)USART1->USART_RDR;
+}
+
+void USART1_IRQHandler(void)
+{
+    if((USART1->USART_ISR & USART_ISR_RXNE_Msk) != 0U)
+    {
+        received_byte = (uint8_t)USART1->USART_RDR;
+        received_byte_ready = 1U;
+    }
 }
