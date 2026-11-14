@@ -72,3 +72,12 @@ void USART1_SendByte (uint8_t data)
 
     USART1->USART_TDR = data;
 }
+
+void USART1_SendString (const char *text)
+{
+    while(*text != '\0') 
+    {
+        USART1_SendByte((uint8_t)*text);
+        text++;
+    }
+}

@@ -74,8 +74,8 @@ int main(void)
     /* Initialize USART1 TX on PC4 */
     USART1_Init(GPIOC, GPIO_PIN_4, GPIO_AF_7, USART1_INPUT_CLOCK_HZ, USART1_BAUD_RATE);
 
-    /* Send 'A' as a polling test */
-    USART1_SendByte('A');
+    /* Send test string using polling */
+    USART1_SendString("USART1 polling.\r\n");
 
     /*
      * The USER button is handled by EXTI0_IRQHandler().

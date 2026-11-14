@@ -35,10 +35,19 @@ void USART1_Init (GPIO_TypeDef *tx_port,
 /**
  * @brief Send one byte through USART1 using polling
  * 
- * @param[in] data              Byte to sent
+ * @param[in] data              Byte to send
  * 
  * @note Blocks until the transmit data register is ready.
  */
 void USART1_SendByte (uint8_t data);
+
+/**
+ * @brief Send a null-terminated string through USART1 using polling.
+ *
+ * @param[in] text Pointer to the string to send.
+ *
+ * @note Blocks while waiting for each byte to be transmitted.
+ */
+void USART1_SendString(const char *text);
 
 #endif /* UART_H_ */
