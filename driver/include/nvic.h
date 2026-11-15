@@ -4,8 +4,8 @@
  * @brief   NVIC driver interface.
  *
  * @details
- * Provides APIs to enable external interrupts and configure 
- * their interrupt priorities in the NVIC.
+ * Provides APIs to enable external interrupts and configure their interrupt
+ * priorities in the NVIC.
  *
  * @author  Ajinkya Shinde
  * @date    2026-09-18
@@ -14,12 +14,17 @@
 #ifndef NVIC_H_
 #define NVIC_H_
 
+/* ***************************************************************************
+ *                              INCLUDES
+ * ************************************************************************* */
+
 #include <stdint.h>
 #include "stm32f303xc.h"
 
 /* ***************************************************************************
  *                        FUNCTION PROTOTYPES
  * ************************************************************************* */
+
 /**
  * @brief Enable an external interrupt in the NVIC.
  *

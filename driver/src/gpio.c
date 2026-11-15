@@ -25,8 +25,16 @@
  ******************************************************************************
  */
 
+/* ***************************************************************************
+ *                              INCLUDES
+ * ************************************************************************* */
+
 #include "gpio.h"
 #include "stm32f303xc.h"
+
+/* ***************************************************************************
+ *                        FUNCTION DEFINITIONS
+ * ************************************************************************* */
 
 void GPIO_Init(GPIO_TypeDef *GPIOx,
                GPIO_Pin_t gpio_pin,
@@ -47,7 +55,7 @@ void GPIO_Init(GPIO_TypeDef *GPIOx,
     uint32_t shift = (uint32_t)gpio_pin * 2U;
 
 
-    /* 
+    /*
      * Clear the existing two-bit fields of MODER first because the new mode can
      * contain either 0 or 1 in either bit position.
      */
@@ -55,7 +63,7 @@ void GPIO_Init(GPIO_TypeDef *GPIOx,
     GPIOx->MODER |= ((uint32_t)mode << shift);
 
 
-    /* 
+    /*
      * OTYPER[n] controls the output type of GPIO pin n:
      * Clear the existing bit first so that the requested value can be
      * correctly written whether it is 0 or 1.
@@ -64,14 +72,14 @@ void GPIO_Init(GPIO_TypeDef *GPIOx,
     GPIOx->OTYPER |= ((uint32_t)output_type << gpio_pin);
 
     /*
-     * OSPEEDR[2n+1:2n] configures the output speed
-     * Clear the existing two-bit field before writing the new configuration
+     * OSPEEDR[2n+1:2n] configures the output speed.
+     * Clear the existing two-bit field before writing the new configuration.
      */
     GPIOx->OSPEEDR &= ~(3UL << shift);
     GPIOx->OSPEEDR |= ((uint32_t)speed << shift);
 
 
-    /* 
+    /*
      * PUPDR[2n+1:2n] controls the internal pull configuration:
      * Clear the existing two-bit field before writing the new configuration.
      */

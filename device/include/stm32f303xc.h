@@ -31,7 +31,7 @@
 
 
 /* ***************************************************************************
- *                    STRUCTURES, TYPEDEFS AND ENUMS
+ *                    STRUCTURE, ENUMS AND TYPE-DEFINITIONS
  * ************************************************************************* */
 
 /** @addtogroup Peripheral_registers
@@ -115,7 +115,7 @@ typedef struct
 } GPIO_TypeDef;
 
 /**
- * @brief USART register map
+ * @brief USART register map.
  */
 typedef struct
 {
@@ -124,12 +124,12 @@ typedef struct
     volatile uint32_t USART_CR3;    /*!< 0x08: USART control register 3 */
     volatile uint32_t USART_BRR;    /*!< 0x0C: USART baud rate register */
     volatile uint32_t USART_GTPR;   /*!< 0x10: USART guard time and prescaler register */
-    volatile uint32_t USART_RTOR;   /*!< 0x14: USART receiver timout register */
+    volatile uint32_t USART_RTOR;   /*!< 0x14: USART receiver timeout register */
     volatile uint32_t USART_RQR;    /*!< 0x18: USART request register */
     volatile uint32_t USART_ISR;    /*!< 0x1C: USART interrupt status register */
     volatile uint32_t USART_ICR;    /*!< 0x20: USART interrupt flag clear register */
     volatile uint32_t USART_RDR;    /*!< 0x24: USART receive data register */
-    volatile uint32_t USART_TDR;    /*!< 0x28: USART transmitt data register */
+    volatile uint32_t USART_TDR;    /*!< 0x28: USART transmit data register */
 
 } USART_TypeDef;
 

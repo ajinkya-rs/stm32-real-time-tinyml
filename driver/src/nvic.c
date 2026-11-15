@@ -4,16 +4,24 @@
  * @brief   NVIC driver implementation for the STM32F303xC.
  *
  * @details
- * Implements NVIC interrupt enable and priority configuration 
- * for external interrupts.
+ * Implements NVIC interrupt enable and priority configuration for
+ * external interrupts.
  *
  * @author  Ajinkya Shinde
  * @date    2026-09-21
  * ****************************************************************************
  */
 
+/* ***************************************************************************
+ *                              INCLUDES
+ * ************************************************************************* */
+
 #include "nvic.h"
 #include "core_cm4.h"
+
+/* ***************************************************************************
+ *                        FUNCTION DEFINITIONS
+ * ************************************************************************* */
 
 void NVIC_EnableIRQ(IRQn_Type irq_number)
 {

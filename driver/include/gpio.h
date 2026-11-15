@@ -25,7 +25,6 @@
 #ifndef GPIO_H_
 #define GPIO_H_
 
-
 /* ***************************************************************************
  *                              INCLUDES
  * ************************************************************************* */
@@ -33,9 +32,8 @@
 #include <stdint.h>
 #include "stm32f303xc.h"
 
-
 /* ***************************************************************************
- *                    TYPES, ENUMS AND DEFINITIONS
+ *                    STRUCTURE, ENUMS AND TYPE-DEFINITIONS
  * ************************************************************************* */
 
 /**
@@ -162,10 +160,9 @@ typedef enum
  * @brief GPIO alternate-function selector.
  *
  * @details
- * Selects one of the alternate-function inputs for a GPIO pin.
- * The peripheral signal assigned to each selector depends on the
- * microcontroller and pin; 
- * consult the device datasheet, section 4 alternate function for port X table.
+ * Selects an alternate function for a GPIO pin. The peripheral signals
+ * available for each pin and alternate-function number are listed in the
+ * STM32F303xC datasheet's alternate-function mapping table.
  */
 typedef enum
 {
@@ -188,9 +185,8 @@ typedef enum
 } GPIO_AlternateFunction_t;
 
 
-
 /* ***************************************************************************
- *                              GPIO API
+ *                              FUNCTION PROTOTYPES
  * ************************************************************************* */
 
 /**

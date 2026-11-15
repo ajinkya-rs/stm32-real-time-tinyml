@@ -35,8 +35,8 @@
                          │                             │
                          ▼                             ▼
                         PC                            LR
-                    → address of main()        ← return address 
-                         |                   (after BL main instruction) 
+                    → address of main()        ← return address
+                         |                   (after BL main instruction)
                          |                         + Thumb bit
                          │
                          ▼

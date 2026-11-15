@@ -22,7 +22,7 @@
 #include <stdint.h>
 
 /* ***************************************************************************
- *                    STRUCTURES, TYPEDEFS AND ENUMS
+ *                    STRUCTURE, ENUMS AND TYPE-DEFINITIONS
  * ************************************************************************* */
 
 /** @addtogroup Core_peripheral_registers

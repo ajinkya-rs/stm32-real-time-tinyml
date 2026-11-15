@@ -22,7 +22,7 @@ MEMORY
 }
 
 /*
- * Symbol used by startup.s as the initial Main Stack Pointer (MSP).
+ * Symbol used by startup_stm32f303xc.s as the initial Main Stack Pointer (MSP).
  * The stack starts at the end of RAM and grows toward lower addresses.
  */
 _end_address_of_stack = ORIGIN(RAM) + LENGTH(RAM);

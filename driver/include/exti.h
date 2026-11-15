@@ -15,23 +15,26 @@
 #ifndef EXTI_H_
 #define EXTI_H_
 
+/* ***************************************************************************
+ *                              INCLUDES
+ * ************************************************************************* */
+
 #include <stdint.h>
 
 /* ***************************************************************************
- *                        ENUMS, TYPEDEFS and DEFINES
+ *                    STRUCTURE, ENUMS AND TYPE-DEFINITIONS
  * ************************************************************************* */
 
 /**
  * @brief EXTI trigger selection.
  */
-typedef enum 
+typedef enum
 {
     EXTI_TRIGGER_RISING,
     EXTI_TRIGGER_FALLING,
     EXTI_TRIGGER_RISING_FALLING
 
 } EXTI_Trigger_t;
-
 
 /* ***************************************************************************
  *                        FUNCTION PROTOTYPES

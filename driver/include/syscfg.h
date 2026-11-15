@@ -15,11 +15,16 @@
 #ifndef SYSCFG_H_
 #define SYSCFG_H_
 
+/* ***************************************************************************
+ *                              INCLUDES
+ * ************************************************************************* */
+
 #include <stdint.h>
 
 /* ***************************************************************************
- *                        ENUMS, TYPEDEFS and DEFINES
+ *                              DEFINES
  * ************************************************************************* */
+
 /* Total number of EXTI lines supported by the device. */
 #define TOTAL_EXTI_LINES             16U
 
@@ -28,6 +33,10 @@
 
 /* Number of bits allocated to each EXTI configuration field. */
 #define EXTI_CONFIGURATION_BITS       4U
+
+/* ***************************************************************************
+ *                    STRUCTURE, ENUMS AND TYPE-DEFINITIONS
+ * ************************************************************************* */
 
 /**
  * @brief GPIO port selection for an EXTI line.
@@ -41,7 +50,6 @@ typedef enum
     EXTI_PORT_E = 4U,                   /**< Select GPIO port E. */
     EXTI_PORT_F = 5U                    /**< Select GPIO port F. */
 } SYSCFG_EXTI_Port_t;
-
 
 /* ***************************************************************************
  *                        FUNCTION PROTOTYPES

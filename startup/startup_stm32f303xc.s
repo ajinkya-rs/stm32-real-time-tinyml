@@ -10,10 +10,8 @@
  *   3. Cortex-M system exception vectors
  *   4. STM32F303xC external interrupt vectors
  *
- * After reset, the Cortex-M processor loads the initial Main Stack Pointer (MSP)
- * and the reset vector from the vector table. 
- * The reset vector provides the address of `Reset_Handler`, which is the 
- * first code executed after reset.
+ * After reset, the Cortex-M processor loads the initial MSP and the Reset_Handler
+ * address from the vector table, then begins execution at Reset_Handler.
  *
  * The linker script places the .isr_vector section at Flash address
  * 0x08000000.

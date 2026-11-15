@@ -144,7 +144,7 @@ Keep this terminal running when using OpenOCD as a GDB server.
 The simplest ELF programming flow is:
 
 ```bash
-openocd     -f interface/stlink.cfg     -f target/stm32f3x.cfg     -c "program build/firmware.elf verify reset exit"
+openocd -f interface/stlink.cfg -f target/stm32f3x.cfg -c "program build/firmware.elf verify reset exit"
 ```
 
 OpenOCD programs the loadable firmware contents described by the ELF:
