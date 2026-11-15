@@ -4,10 +4,9 @@
  * @brief EXTI button/LED and USART1 serial demonstration.
  *
  * @details
- * Configures PA0 to trigger EXTI0 and toggle the LED on PE9.
- * Configures USART1 on PC4/PC5 for polling-based transmission and
- * RXNE-interrupt reception. The main loop consumes received bytes from
- * a one-byte mailbox and echoes them using polling transmission.
+ * Initializes GPIO, EXTI, and USART1. The button input is handled through
+ * an EXTI interrupt. USART1 receives and transmits data using interrupts,
+ * with a transmit ring buffer for queued bytes.
  *
  * @author  Ajinkya Shinde
  * @date    2026-11-14
@@ -77,14 +76,18 @@ int main(void)
 
     USART1_SendString("USART1 RX interrupt ready\r\n");
 
-    /* RX-interrupt, polling-TX echo test. */
+    /* RX-interrupt, TX-interrupt echo test. */
     while (1)
     {
-        if(received_byte_ready)
+        if (received_byte_ready)
         {
             uint8_t byte_to_echo = received_byte;
             received_byte_ready = 0U;
-            USART1_SendByte(byte_to_echo);
+
+            while (!USART1_TryQueueByte(byte_to_echo))
+            {
+                /* Wait for the TX interrupt to make queue space. */
+            }
         }
     }
 }

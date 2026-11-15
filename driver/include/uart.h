@@ -14,6 +14,7 @@
 #define UART_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #include "gpio.h"
 
@@ -44,7 +45,7 @@ void USART1_Init(GPIO_TypeDef *tx_port, GPIO_Pin_t tx_pin, GPIO_AlternateFunctio
 /**
  * @brief Send one byte through USART1 using polling
  * 
- * @param[in] data              Byte to send
+ * @param[in] data Byte to send
  * 
  * @note Blocks until the transmit data register is ready.
  */
@@ -53,7 +54,7 @@ void USART1_SendByte(uint8_t data);
 /**
  * @brief Send a null-terminated string through USART1 using polling.
  *
- * @param[in] text              Pointer to the string to send.
+ * @param[in] text Pointer to the string to send.
  *
  * @note Blocks until the transmit data register is ready for each byte.
  */
@@ -67,5 +68,14 @@ void USART1_SendString(const char *text);
  * @note Blocks until a byte is received.
  */
 uint8_t USART1_ReceiveByte(void);
+
+/**
+ * @brief Queue one byte for interrupt-driven transmission.
+ * 
+ * @param[in] data Byte to queue.
+ * 
+ * @return true if queued; false if the transmit queue is full.
+ */
+bool USART1_TryQueueByte(uint8_t data);
 
 #endif /* UART_H_ */

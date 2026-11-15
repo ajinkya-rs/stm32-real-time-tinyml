@@ -17,8 +17,14 @@
 #include "gpio.h"
 #include "stm32f303xc.h"
 
+#define USART1_TX_BUFFER_SIZE               (64U)
+
 volatile uint8_t received_byte = 0U;
 volatile uint8_t received_byte_ready = 0U;
+
+static volatile uint8_t tx_buffer[USART1_TX_BUFFER_SIZE];
+static volatile uint8_t tx_head = 0U;                      /* Current head, where main code writes */
+static volatile uint8_t tx_tail = 0U;                      /* Interrupt handler reads at tail */
 
 void USART1_Init(GPIO_TypeDef *tx_port, GPIO_Pin_t tx_pin, GPIO_AlternateFunction_t tx_af,
                 GPIO_TypeDef *rx_port, GPIO_Pin_t rx_pin, GPIO_AlternateFunction_t rx_af,
@@ -106,11 +112,49 @@ uint8_t USART1_ReceiveByte(void)
     // return (uint8_t)USART1->USART_RDR;
 }
 
+bool USART1_TryQueueByte (uint8_t data)
+{
+    uint8_t next_head = (tx_head + 1U) % USART1_TX_BUFFER_SIZE;
+
+    if(next_head == tx_tail)
+    {
+        return false;   /* Queue is full */
+    }
+
+    /* Write at the current head. */
+    tx_buffer[tx_head] = data;
+    
+    /* Advance head to the next slot. */
+    tx_head = next_head;            
+
+    /* A queued byte is ready; request a TXE interrupt. */
+    USART1->USART_CR1 |= USART_CR1_TXEIE_Msk;
+    return true;
+}
+
 void USART1_IRQHandler(void)
 {
-    if((USART1->USART_ISR & USART_ISR_RXNE_Msk) != 0U)
+    /* Handle RX only when its interrupt is enabled and a byte is ready. */
+    if(((USART1->USART_CR1 & USART_CR1_RXNEIE_Msk) != 0U) &&
+       ((USART1->USART_ISR & USART_ISR_RXNE_Msk) != 0U))
     {
         received_byte = (uint8_t)USART1->USART_RDR;
         received_byte_ready = 1U;
+    }
+
+    /* Handle TX only when its interrupt is enabled and TDR can accept a byte. */
+    if(((USART1->USART_CR1 & USART_CR1_TXEIE_Msk) != 0U) &&
+       ((USART1->USART_ISR & USART_ISR_TXE_Msk) != 0U))
+    {
+        if(tx_tail != tx_head)
+        {
+            USART1->USART_TDR = tx_buffer[tx_tail];
+            tx_tail = (uint8_t)((tx_tail + 1U) % USART1_TX_BUFFER_SIZE);
+        }
+        else
+        {
+            /* No queued bytes: stop TXE interrupts until more data is quesued */
+            USART1->USART_CR1 &= ~USART_CR1_TXEIE_Msk;
+        }
     }
 }
