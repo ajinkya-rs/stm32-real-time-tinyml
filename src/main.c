@@ -1,23 +1,25 @@
 /**
  * ****************************************************************************
  * @file    main.c
- * @brief EXTI button/LED and USART1 serial demonstration.
- *
- * @brief EXTI button/LED and USART1 interrupt-driven echo demo.
+ * @brief   Demonstrate EXTI button/LED control and USART1 interrupt-driven echo.
  *
  * @details
- * Configures the user button on PA0 to trigger EXTI0 and toggle the LED on PE9.
- * USART1 receives bytes through RXNE interrupts and echoes them through TXE
- * interrupts using a transmit ring buffer.
+ * Configures PA0 to trigger EXTI0 and PE9 as the user LED output.
+ * USART1 receives bytes through an RX interrupt into the RX ring buffer.
+ * The main loop reads received bytes and queues them for TX-interrupt
+ * transmission using the TX ring buffer.
  *
  * @author  Ajinkya Shinde
- * @date    2026-11-14
+ * @date    2026-11-16
  * ****************************************************************************
  */
 
 /* ***************************************************************************
  *                              INCLUDES
  * ************************************************************************* */
+
+#include <stdbool.h>
+#include <stdint.h>
 
 #include "stm32f303xc.h"
 #include "rcc.h"
@@ -31,8 +33,8 @@
  *                              DEFINES
  * ************************************************************************* */
 
-#define USART1_INPUT_CLOCK_HZ           8000000UL  /* PCLK2 with the current clock setup */
-#define USART1_BAUD_RATE                115200UL   /* Must match PuTTY's baud rate */
+#define USART1_INPUT_CLOCK_HZ  8000000UL
+#define USART1_BAUD_RATE       115200UL
 
 /* ***************************************************************************
  *                        FUNCTION DEFINITIONS
@@ -40,6 +42,9 @@
 
 int main(void)
 {
+    bool echo_pending = false;
+    uint8_t pending_byte = 0U;
+
     /* Enable the GPIOA, GPIOE and GPIOC peripheral clocks. */
     RCC_AHB_EnableClock(RCC_AHBENR_GPIOAEN_Msk |
                         RCC_AHBENR_GPIOEEN_Msk |
@@ -84,24 +89,25 @@ int main(void)
                 USART1_INPUT_CLOCK_HZ,
                 USART1_BAUD_RATE);
 
-    /* Configure and enable the USART1 interrupt in the NVIC. */
+    /* Enable USART1 interrupts in the NVIC. */
     NVIC_SetPriority(USART1_IRQn, 0U);
     NVIC_EnableIRQ(USART1_IRQn);
 
-    USART1_QueueString("USART1 RX interrupt ready\r\n");
-
-    /* RX-interrupt, TX-interrupt echo test. */
     while (1)
     {
-        if (received_byte_ready)
+        /*
+         * Read another RX byte only after the previous byte has been accepted
+         * by the TX queue.
+         */
+        if (!echo_pending)
         {
-            uint8_t byte_to_echo = received_byte;
-            received_byte_ready = 0U;
+            echo_pending = USART1_ReadByte(&pending_byte);
+        }
 
-            while (!USART1_TryQueueByte(byte_to_echo))
-            {
-                /* Wait for the TX interrupt to make queue space. */
-            }
+        /* Keep the byte pending if the TX queue is temporarily full. */
+        if (echo_pending && USART1_TryQueueTxByte(pending_byte))
+        {
+            echo_pending = false;
         }
     }
 }

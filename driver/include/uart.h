@@ -4,11 +4,10 @@
  * @brief   USART1 driver interface.
  *
  * @details
- * Provides polling transfer functions, RXNE-interrupt reception through a
- * one-byte mailbox, and TXE-interrupt transmission through a ring buffer.
- * 
+ * Provides interrupt-driven USART1 RX and TX using ring buffers.
+ * TX queue functions are nonblocking. The RX read function is nonblocking.
+ *
  * @author  Ajinkya Shinde
- * @date    2026-11-14
  * ****************************************************************************
  */
 #ifndef UART_H_
@@ -19,23 +18,17 @@
  * ************************************************************************* */
 
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #include "gpio.h"
-
-/* ***************************************************************************
- *                            VARIABLES
- * ************************************************************************* */
-
-/* One-byte mailbox: written by USART1_IRQHandler, consumed by main(). */
-extern volatile uint8_t received_byte;
-extern volatile uint8_t received_byte_ready;
 
 /* ***************************************************************************
  *                        FUNCTION PROTOTYPES
  * ************************************************************************* */
 
 /**
- * @brief Initialize USART1 for 8-N-1 and interrupt-driven RX/TX operation.
+ * @brief Initialize USART1 for asynchronous 8-N-1 communication.
  *
  * @param[in] tx_port        GPIO port used for USART1_TX.
  * @param[in] tx_pin         GPIO pin used for USART1_TX.
@@ -50,59 +43,39 @@ extern volatile uint8_t received_byte_ready;
  * @note This function enables RXNEIE. The caller must enable USART1_IRQn in
  *       the NVIC separately.
  */
-void USART1_Init(GPIO_TypeDef *tx_port, GPIO_Pin_t tx_pin, GPIO_AlternateFunction_t tx_af,
-                GPIO_TypeDef *rx_port, GPIO_Pin_t rx_pin, GPIO_AlternateFunction_t rx_af,
-                uint32_t usart_clock_hz,
-                uint32_t baud_rate);
+void USART1_Init(GPIO_TypeDef *tx_port,
+                 GPIO_Pin_t tx_pin,
+                 GPIO_AlternateFunction_t tx_af,
+                 GPIO_TypeDef *rx_port,
+                 GPIO_Pin_t rx_pin,
+                 GPIO_AlternateFunction_t rx_af,
+                 uint32_t usart_clock_hz,
+                 uint32_t baud_rate);
 
 /**
- * @brief Send one byte through USART1 using polling
- * 
- * @param[in] data Byte to send
- * 
- * @note Blocks until the transmit data register is ready. 
- * Do not use while queued interrupt-driven transmission is active.
+ * @brief Try to queue one byte for USART1 transmission.
+ *
+ * @param[in] byte Byte to transmit.
+ * @return true if queued; false if the TX buffer is full.
  */
-void USART1_SendByte(uint8_t data);
+bool USART1_TryQueueTxByte(uint8_t byte);
 
 /**
- * @brief Send a null-terminated string through USART1 using polling.
+ * @brief Queue as many characters as possible without waiting.
  *
- * @param[in] text Pointer to the string to send.
- *
- * @note Blocks until the transmit data register is ready for each byte.
- * Do not use while queued interrupt-driven transmission is active.
+ * @param[in] text Null-terminated string to queue.
+ * @return Number of characters queued. A partial string may be queued if the
+ *         TX buffer fills. Returns 0 if text is NULL, empty, or no byte fits.
  */
-void USART1_SendString(const char *text);
+size_t USART1_TryQueueTxString(const char *text);
 
 /**
- * @brief Receive one byte from USART1 using polling.
+ * @brief Try to read one byte from the USART1 RX buffer.
  *
- * @return The received byte.
- *
- * @note Blocks until a byte is received.
- * Do not call while RXNE interrupts are enabled.
+ * @param[out] data Pointer where the received byte is stored.
+ * @return true if a byte was read; false if data is NULL or the RX buffer
+ *         is empty.
  */
-uint8_t USART1_ReceiveByte(void);
-
-/**
- * @brief Queue one byte for interrupt-driven transmission.
- * 
- * @param[in] data Byte to queue.
- * 
- * @return true if queued; false if the transmit queue is full.
- */
-bool USART1_TryQueueByte(uint8_t data);
-
-/**
- * @brief Queue a null-terminated string for interrupt-driven transmission.
- *
- * @param[in] text String to queue.
- *
- * @note Waits for queue space when the TX queue is full. Call from main code,
- *       not from an interrupt handler. Returns when all characters are queued,
- *       not necessarily when transmission is complete.
- */
-void USART1_QueueString(const char *text);
+bool USART1_ReadByte(uint8_t *data);
 
 #endif /* UART_H_ */

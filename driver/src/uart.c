@@ -1,64 +1,91 @@
 /**
- ******************************************************************************
+ * ****************************************************************************
  * @file    uart.c
- * @brief USART1 driver implementation for the STM32F303xC.
+ * @brief   USART1 driver implementation for the STM32F303xC.
  *
  * @details
- * Configures USART1 and provides polling transfer functions, interrupt-driven
- * reception through a one-byte mailbox, and queued interrupt-driven
- * transmission through a ring buffer.
+ * Configures USART1 and provides interrupt-driven RX and TX using ring buffers.
+ * Received bytes are queued by the USART interrupt and read by the main code.
+ * Transmit bytes are queued by the main code and sent by the USART interrupt.
  *
  * @author  Ajinkya Shinde
- * @date    2026-11-11
- ******************************************************************************
+ * ****************************************************************************
  */
 
 /* ***************************************************************************
  *                              INCLUDES
  * ************************************************************************* */
 
+#include <stddef.h>
+
 #include "uart.h"
-#include "gpio.h"
 #include "stm32f303xc.h"
 
 /* ***************************************************************************
  *                              DEFINES
  * ************************************************************************* */
 
-#define USART1_TX_BUFFER_SIZE               (64U)
+#define USART1_TX_BUFFER_SIZE    (64U)
+#define USART1_RX_BUFFER_SIZE    (64U)
 
 /* ***************************************************************************
  *                             VARIABLES
  * ************************************************************************* */
 
-/* Global variables */
-volatile uint8_t received_byte = 0U;
-volatile uint8_t received_byte_ready = 0U;
-
-/* Private transmit queue */
+/* TX producer: main code. TX consumer: USART1 interrupt handler. */
 static volatile uint8_t tx_buffer[USART1_TX_BUFFER_SIZE];
-static volatile uint8_t tx_head = 0U; /* Next slot main code writes. */
-static volatile uint8_t tx_tail = 0U; /* Next slot the interrupt handler reads. */
+static volatile uint8_t tx_head;
+static volatile uint8_t tx_tail;
+
+/* RX producer: USART1 interrupt handler. RX consumer: main code. */
+static volatile uint8_t rx_buffer[USART1_RX_BUFFER_SIZE];
+static volatile uint8_t rx_head;
+static volatile uint8_t rx_tail;
+
+/* Counts bytes dropped because the software RX buffer was full. */
+static volatile uint32_t rx_buffer_overflow;
+
+/* ***************************************************************************
+ *                      PRIVATE FUNCTION DECLARATIONS
+ * ************************************************************************* */
+
+/**
+ * @brief Store a received byte in the RX buffer from the interrupt handler.
+ *
+ * @param[in] byte Received byte to store.
+ *
+ * @note If the RX buffer is full, the new byte is discarded and the overflow
+ *       counter is incremented.
+ */
+static void USART1_QueueRxByteFromISR(uint8_t byte);
 
 /* ***************************************************************************
  *                        FUNCTION DEFINITIONS
  * ************************************************************************* */
 
-void USART1_Init(GPIO_TypeDef *tx_port, GPIO_Pin_t tx_pin, GPIO_AlternateFunction_t tx_af,
-                GPIO_TypeDef *rx_port, GPIO_Pin_t rx_pin, GPIO_AlternateFunction_t rx_af,
-                uint32_t usart_clock_hz,
-                uint32_t baud_rate)
+void USART1_Init(GPIO_TypeDef *tx_port,
+                 GPIO_Pin_t tx_pin,
+                 GPIO_AlternateFunction_t tx_af,
+                 GPIO_TypeDef *rx_port,
+                 GPIO_Pin_t rx_pin,
+                 GPIO_AlternateFunction_t rx_af,
+                 uint32_t usart_clock_hz,
+                 uint32_t baud_rate)
 {
     uint32_t brr_value;
-    if ((usart_clock_hz == 0U) || (baud_rate == 0U))
+
+    if ((tx_port == NULL) ||
+        (rx_port == NULL) ||
+        (usart_clock_hz == 0U) ||
+        (baud_rate == 0U))
     {
         return;
     }
 
-    /* Disable USART1 before changing its configuration. */
+    /* Disable USART1 while configuring it. */
     USART1->USART_CR1 &= ~USART_CR1_UE_Msk;
 
-    /* Configure the selected pin for USART1_TX. */
+    /* Configure the USART1_TX pin for alternate-function mode. */
     GPIO_SetAlternateFunction(tx_port, tx_pin, tx_af);
     GPIO_Init(tx_port,
               tx_pin,
@@ -67,7 +94,7 @@ void USART1_Init(GPIO_TypeDef *tx_port, GPIO_Pin_t tx_pin, GPIO_AlternateFunctio
               GPIO_SPEED_LOW,
               GPIO_PULL_NONE);
 
-    /* Configure the selected pin for USART1_RX. */
+    /* Configure the USART1_RX pin for alternate-function mode. */
     GPIO_SetAlternateFunction(rx_port, rx_pin, rx_af);
     GPIO_Init(rx_port,
               rx_pin,
@@ -77,117 +104,160 @@ void USART1_Init(GPIO_TypeDef *tx_port, GPIO_Pin_t tx_pin, GPIO_AlternateFunctio
               GPIO_PULL_NONE);
 
     /*
-     * Set asynchronous 8-N-1 framing:
-     * CR1 baseline: 8 data bits, no parity, oversampling by 16.
-     * CR2 = 0: asynchronous mode and one stop bit.
+     * Configure asynchronous 8-N-1 framing:
+     * CR1 = 0: 8 data bits, no parity, oversampling by 16.
+     * CR2 = 0: asynchronous mode, one stop bit.
      * CR3 = 0: no hardware flow control or DMA.
-     * RXNEIE is enabled separately for interrupt-driven reception.
      */
     USART1->USART_CR1 = 0U;
     USART1->USART_CR2 = 0U;
     USART1->USART_CR3 = 0U;
 
-    /*
-     * With OVER8 = 0, calculate the rounded BRR value from the
-     * USART1 input clock and baud rate requested by the other end.
-     */
+    /* Calculate BRR for oversampling by 16, rounding to the nearest integer. */
     brr_value = (usart_clock_hz + (baud_rate / 2U)) / baud_rate;
     USART1->USART_BRR = brr_value;
 
-    /*
-    * Enable the receiver, transmitter, and RXNE interrupt source
-    * while UE is clear. The next statement enables USART1.
-    */
-    USART1->USART_CR1 |= (USART_CR1_RE_Msk | USART_CR1_TE_Msk | USART_CR1_RXNEIE_Msk);
+    /* Reset the TX and RX ring-buffer indexes and the RX overflow counter. */
+    tx_head = 0U;
+    tx_tail = 0U;
+    rx_head = 0U;
+    rx_tail = 0U;
+    rx_buffer_overflow = 0U;
+
+    /* Clear a previously latched overrun flag before enabling RX interrupts. */
+    USART1->USART_ICR = USART_ICR_ORECF_Msk;
+
+    /* Enable the transmitter, receiver, and RXNE interrupt source. */
+    USART1->USART_CR1 |= (USART_CR1_TE_Msk |
+                          USART_CR1_RE_Msk |
+                          USART_CR1_RXNEIE_Msk);
+
+    /* Enable USART1. */
     USART1->USART_CR1 |= USART_CR1_UE_Msk;
 }
 
-void USART1_SendByte(uint8_t tx_byte) 
+bool USART1_TryQueueTxByte(uint8_t byte)
 {
-    while ((USART1->USART_ISR & USART_ISR_TXE_Msk) == 0U)
-    {
-        /* Wait until the transmit data register can accept a byte. */
-    }
+    uint8_t current_head = tx_head;
+    uint8_t next_head =
+        (uint8_t)((current_head + 1U) % USART1_TX_BUFFER_SIZE);
 
-    USART1->USART_TDR = tx_byte;
-}
-
-void USART1_SendString(const char *tx_text)
-{
-    while (*tx_text != '\0') 
-    {
-        USART1_SendByte((uint8_t)*tx_text);
-        tx_text++;
-    }
-
-}
-
-uint8_t USART1_ReceiveByte(void)
-{
-    while ((USART1->USART_ISR & USART_ISR_RXNE_Msk) == 0U)
-    {
-        /* Wait until the received data is ready to be read */
-    }
-
-    return (uint8_t)USART1->USART_RDR;
-}
-
-bool USART1_TryQueueByte(uint8_t data)
-{
-    uint8_t next_head = (tx_head + 1U) % USART1_TX_BUFFER_SIZE;
-
+    /* One unused slot distinguishes a full buffer from an empty one. */
     if (next_head == tx_tail)
     {
-        return false;   /* Queue is full */
+        return false;
     }
 
-    /* Write at the current head. */
-    tx_buffer[tx_head] = data;
-
-    /* Advance head to the next slot. */
+    /* Store the byte before publishing the updated head. */
+    tx_buffer[current_head] = byte;
     tx_head = next_head;
 
-    /* A queued byte is ready; request a TXE interrupt. */
+    /* Request a TX interrupt so the queued byte can be sent. */
     USART1->USART_CR1 |= USART_CR1_TXEIE_Msk;
+
     return true;
 }
 
-void USART1_QueueString(const char *text)
+size_t USART1_TryQueueTxString(const char *text)
 {
-    while (*text != '\0') 
+    if (text == NULL)
     {
-        while (!USART1_TryQueueByte((uint8_t)*text))
+        return 0U;
+    }
+
+    size_t queued_count = 0U;
+
+    while (text[queued_count] != '\0')
+    {
+        if (!USART1_TryQueueTxByte((uint8_t)text[queued_count]))
         {
-            /* Wait for the TX interrupt to make queue space */
+            /* Stop without waiting; the caller can retry the remaining text. */
+            break;
         }
 
-        text++;
+        queued_count++;
     }
+
+    return queued_count;
+}
+
+bool USART1_ReadByte(uint8_t *data)
+{
+    if (data == NULL)
+    {
+        return false;
+    }
+
+    uint8_t current_tail = rx_tail;
+
+    /* Equal indexes mean there are no unread bytes. */
+    if (current_tail == rx_head)
+    {
+        return false;
+    }
+
+    /* Copy the next byte to the caller, then advance the read index. */
+    *data = rx_buffer[current_tail];
+    rx_tail =
+        (uint8_t)((current_tail + 1U) % USART1_RX_BUFFER_SIZE);
+
+    return true;
 }
 
 void USART1_IRQHandler(void)
 {
-    /* Handle RX only when its interrupt is enabled and a byte is ready. */
-    if (((USART1->USART_CR1 & USART_CR1_RXNEIE_Msk) != 0U) &&
-       ((USART1->USART_ISR & USART_ISR_RXNE_Msk) != 0U))
+    uint32_t cr1_status = USART1->USART_CR1;
+    uint32_t isr_status = USART1->USART_ISR;
+
+    /* Read RDR when RXNE is set; this clears RXNE. */
+    if (((cr1_status & USART_CR1_RXNEIE_Msk) != 0U) &&
+        ((isr_status & USART_ISR_RXNE_Msk) != 0U))
     {
-        received_byte = (uint8_t)USART1->USART_RDR;
-        received_byte_ready = 1U;
+        uint8_t received_byte = (uint8_t)USART1->USART_RDR;
+        USART1_QueueRxByteFromISR(received_byte);
     }
 
-    /* Handle TX only when its interrupt is enabled and TDR can accept a byte. */
-    if (((USART1->USART_CR1 & USART_CR1_TXEIE_Msk) != 0U) &&
-       ((USART1->USART_ISR & USART_ISR_TXE_Msk) != 0U))
+    /*
+     * RXNEIE also interrupts on ORE. Clear ORE through ICR so it does not
+     * keep requesting interrupts. Any available RDR byte was handled above.
+     */
+    if ((isr_status & USART_ISR_ORE_Msk) != 0U)
+    {
+        USART1->USART_ICR = USART_ICR_ORECF_Msk;
+    }
+
+    /* Send the next queued byte when the transmit data register is empty. */
+    if (((cr1_status & USART_CR1_TXEIE_Msk) != 0U) &&
+        ((isr_status & USART_ISR_TXE_Msk) != 0U))
     {
         if (tx_tail != tx_head)
         {
             USART1->USART_TDR = tx_buffer[tx_tail];
-            tx_tail = (uint8_t)((tx_tail + 1U) % USART1_TX_BUFFER_SIZE);
+            tx_tail =
+                (uint8_t)((tx_tail + 1U) % USART1_TX_BUFFER_SIZE);
         }
         else
         {
-            /* No bytes are queued; disable TXE interrupts until more data is queued. */
+            /* No data remains; disable TX interrupts until more is queued. */
             USART1->USART_CR1 &= ~USART_CR1_TXEIE_Msk;
         }
     }
+}
+
+static void USART1_QueueRxByteFromISR(uint8_t byte)
+{
+    uint8_t current_head = rx_head;
+    uint8_t next_head =
+        (uint8_t)((current_head + 1U) % USART1_RX_BUFFER_SIZE);
+
+    /* If the next write position meets the read position, the buffer is full. */
+    if (next_head == rx_tail)
+    {
+        rx_buffer_overflow++;
+        return;
+    }
+
+    /* Store the byte before publishing the updated head. */
+    rx_buffer[current_head] = byte;
+    rx_head = next_head;
 }

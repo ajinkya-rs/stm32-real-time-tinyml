@@ -306,6 +306,14 @@ typedef enum
 #define USART_ISR_TXE_Pos                   (7U)
 #define USART_ISR_TXE_Msk                   (1UL << USART_ISR_TXE_Pos)
 
+#define USART_ISR_ORE_Pos                   (3U)
+#define USART_ISR_ORE_Msk                   (1UL << USART_ISR_ORE_Pos)
+
+/* .................................................................... ICR */
+
+#define USART_ICR_ORECF_Pos                 (3U)
+#define USART_ICR_ORECF_Msk                 (1UL << USART_ICR_ORECF_Pos)
+
 /** @} */
 
 
