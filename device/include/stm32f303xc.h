@@ -298,7 +298,21 @@ typedef enum
 #define USART_CR2_STOP_Pos                  (12U)
 #define USART_CR2_STOP_Msk                  (3UL << USART_CR2_STOP_Pos)
 
+/* .................................................................... CR3 */
+
+#define USART_CR3_EIE_Pos                   (0U)
+#define USART_CR3_EIE_Msk                   (1UL << USART_CR3_EIE_Pos)
+
 /* .................................................................... ISR */
+
+#define USART_ISR_FE_Pos                    (1U)
+#define USART_ISR_FE_Msk                    (1UL << USART_ISR_FE_Pos)
+
+#define USART_ISR_NE_Pos                    (2U)
+#define USART_ISR_NE_Msk                    (1UL << USART_ISR_NE_Pos)
+
+#define USART_ISR_ORE_Pos                   (3U)
+#define USART_ISR_ORE_Msk                   (1UL << USART_ISR_ORE_Pos)
 
 #define USART_ISR_RXNE_Pos                  (5U)
 #define USART_ISR_RXNE_Msk                  (1UL << USART_ISR_RXNE_Pos)
@@ -306,10 +320,13 @@ typedef enum
 #define USART_ISR_TXE_Pos                   (7U)
 #define USART_ISR_TXE_Msk                   (1UL << USART_ISR_TXE_Pos)
 
-#define USART_ISR_ORE_Pos                   (3U)
-#define USART_ISR_ORE_Msk                   (1UL << USART_ISR_ORE_Pos)
-
 /* .................................................................... ICR */
+
+#define USART_ICR_FECF_Pos                  (1U)
+#define USART_ICR_FECF_Msk                  (1UL << USART_ICR_FECF_Pos)
+
+#define USART_ICR_NCF_Pos                   (2U)
+#define USART_ICR_NCF_Msk                   (1UL << USART_ICR_NCF_Pos)
 
 #define USART_ICR_ORECF_Pos                 (3U)
 #define USART_ICR_ORECF_Msk                 (1UL << USART_ICR_ORECF_Pos)
